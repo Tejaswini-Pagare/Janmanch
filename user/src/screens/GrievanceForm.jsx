@@ -13,6 +13,7 @@ const GrievanceForm = () => {
   const [lastSubmission, setLastSubmission] = useState(null);
   const [confirmationMessage, setConfirmationMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [mapVisible, setMapVisible] = useState(false);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -34,7 +35,8 @@ const GrievanceForm = () => {
               longitude: position.coords.longitude,
             },
           }));
-          setErrorMessage("");  // Clear any previous error
+          setMapVisible(true);
+          setErrorMessage("");
         },
         (error) => {
           switch (error.code) {
@@ -59,7 +61,6 @@ const GrievanceForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
     setLastSubmission({
       ...formData,
       image: formData.image?.name || "No image uploaded",
@@ -68,43 +69,22 @@ const GrievanceForm = () => {
     setConfirmationMessage("Your submission has been received successfully!");
     setErrorMessage("");
 
-    setFormData({ submissionType: "", category: "", description: "", image: null, location: { latitude: null, longitude: null } });
-
     setTimeout(() => setConfirmationMessage(""), 5000);
   };
 
   return (
-    <div>
     <div className="p-6 max-w-4xl mx-auto text-center font-sans">
       <h1 className="text-3xl font-bold text-gray-800 mb-6">Grievance Form</h1>
       <form className="bg-gray-100 p-6 rounded-lg shadow-lg space-y-4" onSubmit={handleSubmit}>
-        <label className="block font-semibold text-left" htmlFor="submissionType">
-          Submission Type
-        </label>
-        <select
-          name="submissionType"
-          id="submissionType"
-          className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-200"
-          value={formData.submissionType}
-          onChange={handleInputChange}
-          required
-        >
+        <label className="block font-semibold text-left">Submission Type</label>
+        <select name="submissionType" className="w-full p-2 border" value={formData.submissionType} onChange={handleInputChange} required>
           <option value="">-- Select Type --</option>
           <option value="Grievance">Grievance</option>
           <option value="Suggestion">Suggestion</option>
         </select>
 
-        <label className="block font-semibold text-left" htmlFor="category">
-          Category
-        </label>
-        <select
-          name="category"
-          id="category"
-          className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-200"
-          value={formData.category}
-          onChange={handleInputChange}
-          required
-        >
+        <label className="block font-semibold text-left">Category</label>
+        <select name="category" className="w-full p-2 border" value={formData.category} onChange={handleInputChange} required>
           <option value="">-- Select Category --</option>
           <option value="Roads">Roads</option>
           <option value="Water">Water</option>
@@ -112,46 +92,27 @@ const GrievanceForm = () => {
           <option value="Sanitation">Sanitation</option>
         </select>
 
-        <label className="block font-semibold text-left" htmlFor="description">
-          Description
-        </label>
-        <textarea
-          name="description"
-          id="description"
-          className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-200"
-          rows="5"
-          placeholder="Describe your issue or suggestion..."
-          value={formData.description}
-          onChange={handleInputChange}
-          required
-        ></textarea>
+        <label className="block font-semibold text-left">Description</label>
+        <textarea name="description" className="w-full p-2 border" rows="5" placeholder="Describe your issue or suggestion..." value={formData.description} onChange={handleInputChange} required></textarea>
 
-        <label className="block font-semibold text-left" htmlFor="image">
-          Upload Image (optional)
-        </label>
-        <input
-          type="file"
-          name="image"
-          id="image"
-          className="w-full p-2 border border-gray-300 rounded focus:outline-none"
-          accept="image/*"
-          onChange={handleImageChange}
-        />
+        <label className="block font-semibold text-left">Upload Image (optional)</label>
+        <input type="file" name="image" className="w-full p-2 border" accept="image/*" onChange={handleImageChange} />
 
-        <button
-          type="button"
-          onClick={handleLocation}
-          className="w-full bg-teal-400 hover:bg-teal-600 text-white p-3 rounded transition-all mb-4"
-        >
-          Get Location
-        </button>
+        <button type="button" onClick={handleLocation} className="w-full bg-teal-400 text-white p-3 rounded">Get Location</button>
+        
+        {mapVisible && formData.location.latitude && (
+          <div className="mt-4">
+            <h3 className="text-lg font-bold">Your Location</h3>
+            <iframe
+              title="Google Map"
+              className="w-full h-64 border rounded"
+              src={`https://www.google.com/maps?q=${formData.location.latitude},${formData.location.longitude}&hl=es;z=14&output=embed`}
+              allowFullScreen
+            ></iframe>
+          </div>
+        )}
 
-        <button
-          type="submit"
-          className="w-full bg-teal-500 hover:bg-teal-700 text-white p-3 rounded hover:bg-teal-600 transition-all"
-        >
-          Submit
-        </button>
+        <button type="submit" className="w-full bg-teal-500 text-white p-3 rounded">Submit</button>
       </form>
 
       {errorMessage && <p className="text-red-600 font-semibold mt-4">{errorMessage}</p>}
@@ -165,10 +126,8 @@ const GrievanceForm = () => {
           <p><strong>Description:</strong> {lastSubmission.description}</p>
           <p><strong>Image:</strong> {lastSubmission.image}</p>
           <p><strong>Location:</strong> {lastSubmission.location}</p>
-          <p className="text-gray-500 italic">User details are hidden for privacy.</p>
         </div>
       )}
-    </div>
     </div>
   );
 };
