@@ -1,14 +1,20 @@
 import React, { useState } from "react";
-import { ButtonBase } from "@mui/material";
+import { ButtonBase, Tooltip, IconButton } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import PropTypes from "prop-types";
+import { FaTelegramPlane } from "react-icons/fa";
+import { AiOutlineLike, AiFillLike } from "react-icons/ai"; // Like Icons
 
 function PostCard({ sentby, image, title, description, btnlikes, date }) {
     const [likes, setLikes] = useState(btnlikes || 0);
     const [liked, setLiked] = useState(false);
-    const [showFull, setShowFull] = useState(false); // Read More state
-    const [isModalOpen, setIsModalOpen] = useState(false); // Image modal state
+    const [showFull, setShowFull] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [copied, setCopied] = useState(false);
 
-    // Format the date
+    const theme = useTheme();
+
+    // Format date
     const formattedDate = date
         ? new Date(date).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })
         : "Unknown date";
@@ -23,14 +29,40 @@ function PostCard({ sentby, image, title, description, btnlikes, date }) {
     const handleImageClick = () => setIsModalOpen(true);
     const closeModal = () => setIsModalOpen(false);
 
-    // Check file type (image or PDF)
+    // Check file type
     const fileExtension = image?.split(".").pop().toLowerCase();
     const isImage = ["jpg", "jpeg", "png", "gif", "webp"].includes(fileExtension);
     const isPDF = fileExtension === "pdf";
 
+    // Share functionality
+    const sharePost = async () => {
+        const postUrl = window.location.href;
+        const shareMessage = `${title}\n\n${description}\n\nRead more: ${postUrl}`;
+        const shareData = { title, text: shareMessage, url: postUrl };
+
+        if (navigator.share) {
+            try {
+                await navigator.share(shareData);
+            } catch (error) {
+                console.error("Error sharing:", error);
+            }
+        } else {
+            const encodedMessage = encodeURIComponent(shareMessage);
+            const whatsappURL = `https://api.whatsapp.com/send?text=${encodedMessage}`;
+            const telegramURL = `https://t.me/share/url?url=${encodeURIComponent(postUrl)}&text=${encodedMessage}`;
+
+            window.open(telegramURL, "_blank") ||
+                window.open(whatsappURL, "_blank") ||
+                navigator.clipboard.writeText(postUrl);
+
+            setCopied(true);
+            setTimeout(() => setCopied(false), 2000);
+        }
+    };
+
     return (
         <>
-            <div className="bg-white shadow-md rounded-lg p-4 hover:shadow-lg transition-shadow max-w-3xl mx-auto mb-5 shadow-slate-500 hover:shadow-slate-900">
+            <div className="bg-white shadow-md rounded-lg p-4 hover:shadow-lg transition-shadow max-w-3xl mx-auto mb-5 shadow-slate-500 hover:shadow-slate-900 relative">
                 {/* Sender Info */}
                 <div className="flex items-center gap-4 mb-4">
                     <img
@@ -73,7 +105,6 @@ function PostCard({ sentby, image, title, description, btnlikes, date }) {
                                 alt="Post media"
                                 className="object-cover h-72 w-full"
                                 onClick={handleImageClick}
-                                style={{ backgroundColor: "rgba(0, 0, 0, 0.7)" }}
                             />
                         )}
 
@@ -86,24 +117,17 @@ function PostCard({ sentby, image, title, description, btnlikes, date }) {
                                     height="400px"
                                     className="rounded-lg"
                                 />
-                                <a
-                                    href={`http://localhost:5000/Images/${image}`}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="text-blue-600 font-bold"
-                                >
-                                    Open PDF in new tab
-                                </a>
                             </div>
                         )}
                     </div>
                 )}
 
-                {/* Like Button */}
-                <div className="flex items-center">
+                {/* Actions (Like + Share) */}
+                <div className="flex items-center gap-3">
+                    {/* Like Button */}
                     <ButtonBase
                         onClick={handleLike}
-                        className="rounded-md bg-teal-500 p-2.5 text-white shadow-md hover:shadow-lg focus:bg-teal-600 transition-all"
+                        className="rounded-md bg-teal-500 p-2.5 text-white shadow-md hover:shadow-lg transition-all flex items-center gap-1"
                         sx={{
                             padding: "8px",
                             backgroundColor: liked ? "darkslategray" : "teal",
@@ -114,17 +138,52 @@ function PostCard({ sentby, image, title, description, btnlikes, date }) {
                             },
                         }}
                     >
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 24 24"
-                            fill="currentColor"
-                            className="w-4 h-4"
-                        >
-                            <path d="m11.645 20.91-.007-.003-.022-.012a15.247 15.247 0 0 1-.383-.218 25.18 25.18 0 0 1-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0 1 12 5.052 5.5 5.5 0 0 1 16.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 0 1-4.244 3.17 15.247 15.247 0 0 1-.383.219l-.022.012-.007.004-.003.001a.752.752 0 0 1-.704 0l-.003-.001Z" />
-                        </svg>
+                        {liked ? <AiFillLike size={20} /> : <AiOutlineLike size={20} />}
+                        {likes}
                     </ButtonBase>
-                    <span className="ml-2 text-teal-700 font-medium">{likes} Likes</span>
+
+                    {/* Share Icon */}
+                    <Tooltip title="Share">
+                        <IconButton
+                            onClick={sharePost}
+                            sx={{
+                                color: theme.palette.mode === "dark" ? "#1DA1F2" : "#0088CC",
+                                "&:hover": {
+                                    color: theme.palette.mode === "dark" ? "#0d72b9" : "#005d99",
+                                },
+                            }}
+                        >
+                            <FaTelegramPlane size={20} />
+                        </IconButton>
+                    </Tooltip>
+
+                    {/* Toast Message */}
+                    {copied && <span className="text-green-500 font-medium">Link copied!</span>}
                 </div>
+
+                {/* Open PDF or Image Buttons (Bottom-Right) */}
+                {(isImage || isPDF) && (
+                    <div className="absolute bottom-2 right-2 flex space-x-2">
+                        {isPDF && (
+                            <a
+                                href={`http://localhost:5000/Images/${image}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-blue-600 font-bold bg-gray-200 p-1 rounded-md shadow-md"
+                            >
+                                Open PDF
+                            </a>
+                        )}
+                        {isImage && (
+                            <button
+                                className="text-blue-600 font-bold bg-gray-200 p-1 rounded-md shadow-md"
+                                onClick={handleImageClick}
+                            >
+                                Open Image
+                            </button>
+                        )}
+                    </div>
+                )}
             </div>
 
             {/* Modal for Full-Size Image */}

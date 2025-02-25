@@ -20,7 +20,7 @@ function App() {
   return (
     <>
       <Navbar/>
-      <Chatbox/>
+      
       <Routes>
         {/* <Route path='/' element={<UserHome/>}/> */}
         <Route path='/' element={<CorporatorHome/>}/>
