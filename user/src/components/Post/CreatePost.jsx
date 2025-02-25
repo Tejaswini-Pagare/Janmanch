@@ -47,13 +47,13 @@ const CreatePostForm = ({ setPosts }) => {
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 mx-auto">
-      <h2 className="text-2xl font-extrabold text-gray-800 dark:text-white mb-6 text-center">
+    <div className="bg-white rounded-xl shadow-lg p-6 mx-auto">
+      <h2 className="text-2xl font-extrabold mb-6 text-center">
         Create New Post
       </h2>
       <form onSubmit={handlePostSubmit} encType="multipart/form-data">
         <div className="mb-6">
-          <label htmlFor="title" className="block text-sm text-gray-700 dark:text-gray-400 font-medium mb-2">
+          <label htmlFor="title" className="block text-sm text-gray-700 font-medium mb-2">
             Post Title
           </label>
           <input
@@ -62,13 +62,13 @@ const CreatePostForm = ({ setPosts }) => {
             name="title"
             value={newPost.title}
             onChange={handleInputChange}
-            className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:ring-2 focus:ring-teal-500 focus:outline-none"
+            className="w-full px-4 py-3 rounded-lg border border-gray-300 shadow-md   text-gray-900 focus:ring-2 focus:ring-teal-500 focus:outline-none"
             placeholder="Enter post title"
             required
           />
         </div>
         <div className="mb-6">
-          <label htmlFor="description" className="block text-sm text-gray-700 dark:text-gray-400 font-medium mb-2">
+          <label htmlFor="description" className="block text-sm text-gray-700 font-medium mb-2">
             Description
           </label>
           <textarea
@@ -76,7 +76,7 @@ const CreatePostForm = ({ setPosts }) => {
             name="description"
             value={newPost.description}
             onChange={handleInputChange}
-            className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:ring-2 focus:ring-teal-500 focus:outline-none resize-none"
+            className="w-full px-4 py-3 rounded-lg border border-gray-300 shadow-md   text-gray-900  focus:ring-2 focus:ring-teal-500 focus:outline-none resize-none"
             placeholder="Enter post description"
             rows="4"
             required
@@ -91,7 +91,7 @@ const CreatePostForm = ({ setPosts }) => {
             id="file"
             name="file"
             onChange={handleFileChange}
-            className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:ring-2 focus:ring-teal-500 focus:outline-none"
+            className="w-full px-4 py-3 rounded-lg border border-gray-300 shadow-md   text-gray-900  focus:ring-2 focus:ring-teal-500 focus:outline-none"
           />
         </div>
         <button

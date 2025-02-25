@@ -1,37 +1,103 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-import {Routes,Route} from "react-router-dom"
-import { Provider } from "react-redux";
-import store from "../store";
-import Navbar from "./components/Navigation/Navbar"
-import UserPosts from './screens/UserPosts'
-import UserHome from "./screens/UserHome"
-import GrievanceForm from "./screens/GrievanceForm"
-import WardData from "./screens/WardData"
-import CorporatorDetails from "./screens/CorporatorDetails"
-import CorporatorHome from './screens/CorporatorHome'
-import CorporatorCommunity from "./screens/CorporatorCommunity"
-import LoginPage from './screens/Login'
+import { useState, useEffect } from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
+import "./App.css";
+
+// Components
+import Navbar from "./components/Navigation/Navbar";
+import Footer from "./components/Navigation/Footer";
+
+// Screens
+import LoginPage from "./screens/Login";
+import SignupPage from "./screens/UserRegistration";
+import UserHome from "./screens/UserHome";
+import CorporatorHome from "./screens/CorporatorHome";
+import UserCommunity from "./screens/UserPosts";
+import CorporatorCommunity from "./screens/CorporatorCommunity";
+import GrievanceForm from "./screens/GrievanceForm";
+import WardData from "./screens/WardData";
+import CorporatorDetails from "./screens/CorporatorDetails";
+import NotFound from "./screens/NotFound";
+import UserInfo from "./screens/UserInfo";
 import Chatbox from './components/Chatbot/chatbox'
+
 function App() {
-  const [count, setCount] = useState(0)
+  const [userRole, setUserRole] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem("userToken");
+    const role = localStorage.getItem("userRole");
+
+    if (token && role) {
+      setIsAuthenticated(true);
+      setUserRole(role);
+    } else {
+      setIsAuthenticated(false);
+      setUserRole(null);
+    }
+  }, []);
+
+
   return (
     <>
-      <Navbar/>
-      
+      {
+        isAuthenticated && (<Navbar />)
+      }
+      {/* <Navbar /> */}
       <Routes>
-        {/* <Route path='/' element={<UserHome/>}/> */}
-        <Route path='/' element={<CorporatorHome/>}/>
-        <Route path="/login" element={<LoginPage/>}/>
-        <Route path='/usercommunity' element={<UserPosts/>}/>
-        <Route path='/community' element={<CorporatorCommunity/>}/>
-        <Route path='/citizen-voice' element={<GrievanceForm/>}/>
-        <Route path='/ward-details' element={<WardData/>}/>
-        <Route path='/corporator-details' element={<CorporatorDetails/>}/>
+        {/* Public Routes */}
+        <Route
+          path="/login"
+          element={
+            <LoginPage
+              setIsAuthenticated={setIsAuthenticated}
+              setUserRole={setUserRole}
+            />
+          }
+        />
+        <Route path="/signup" element={<SignupPage />} />
+
+        {/* Protected Routes */}
+        {isAuthenticated ? (
+          <>
+            {userRole === "user" && (
+              <>
+                <Route path="/" element={<UserHome />} />
+                <Route path="/community" element={<UserCommunity />} />
+                <Route path="/citizen-voice" element={<GrievanceForm />} />
+                <Route path="/ward-details" element={<WardData />} />
+                <Route path="/corporator-details" element={<CorporatorDetails />} />
+                <Route path='/user-info' element={<UserInfo/>}/>
+                
+                <Route path="*" element={<NotFound />} />
+              </>
+            )}
+
+            {userRole === "corporator" && (
+              <>
+                <Route path="/" element={<CorporatorHome />} />
+                <Route path="/community" element={<CorporatorCommunity />} />
+                <Route path="/ward-details" element={<WardData />} />
+                <Route path="/corporator-details" element={<CorporatorDetails />} />
+                <Route path="*" element={<NotFound />} />
+              </>
+            )}
+          </>
+        ) : (
+          <>
+          {/* <Route path="*" element={<Navigate to="/login" />} /> */}
+          <Route path="*" element={isAuthenticated ? <NotFound /> : <Navigate to="/login" />} />
+          </>
+        )}
       </Routes>
+    
+      {userRole === "user" && (
+              <Chatbox/>
+            )}
+      
+      <Footer />
     </>
-  )
+  );
 }
-export default App
+
+export default App;

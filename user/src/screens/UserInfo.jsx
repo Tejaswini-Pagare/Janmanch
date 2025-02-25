@@ -38,7 +38,7 @@ const UserInfo = () => {
     `font-medium text-left mb-1 cursor-pointer ${focusedField === field ? "text-teal-500" : "text-black"}`;
 
   return (
-    <div><Navbar/>
+    <div>
     <div className="p-6 max-w-xl mx-auto text-center font-sans">
 <h1 className="text-3xl font-bold text-gray-800 mb-6">User Information</h1>
       <form className="flex flex-col gap-6 bg-white p-8 rounded-lg shadow-xl border border-gray-200">

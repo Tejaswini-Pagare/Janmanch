@@ -1,18 +1,22 @@
 import mongoose from "mongoose";
 
 const projectSchema = new mongoose.Schema({
-  category: { type: String, required: true }, 
-  name: { type: String, required: true }, 
-  visualizationType: { type: String, required: true },
-  description: {type: String, required: true},
+  name: { type: String, required: true }, // ✅ Project name
+  visualizationType: { type: String, required: true }, // ✅ Visualization type
+  category: { type: String, required: true }, // ✅ Category
+  description: { type: String, required: true }, // ✅ Description
+  startDate: { type: String, required: true }, // ✅ Start date
   data: [
     {
-      name: { type: String, required: true }, // e.g., month names
-      value: { type: Number, required: true }, // e.g., value for that month
+      name: { type: String, required: true }, // ✅ Data point name
+      value: { type: Number, required: true }, // ✅ Data point value
     },
-  ], 
-},{
-  timestamps: true, // Automatically add createdAt and updatedAt fields
+  ],
+  corporator: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Corporator",
+    required: true,
+  }, // this will link to the corporator who created it
 });
 
-export default mongoose.model("Project", projectSchema);
+export const Project = mongoose.model("Project", projectSchema);

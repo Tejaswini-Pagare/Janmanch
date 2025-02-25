@@ -1,7 +1,5 @@
-import React, { useState } from "react";
-import Navbar from "../components/Navigation/Navbar";
+import React, { useState, useEffect } from "react";
 import DevelopmentChart from "../components/Charts/DevelopmentChart";
-import Footer from "../components/Navigation/Footer";
 import WelcomeCard from "../components/cards/Welcome";
 import GraphInputModal from "../components/Modal/CorporatorInModal";
 
@@ -9,171 +7,223 @@ const HomePage = () => {
   const [developmentType, setDevelopmentType] = useState("all");
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [graphs, setGraphs] = useState([
-    // Sample graph data for testing
-    {
-      projectId: "1",
-      chartType: "Bar",
-      developmentCategory: "Education",
-    },
-  ]);
+  const [graphs, setGraphs] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const userRole = localStorage.getItem("userRole");
+
+  const fetchProjects = async () => {
+    console.log("Fetching projects for category:", developmentType);
+    setLoading(true);
+    try {
+      const response = await fetch(
+        `http://localhost:5000/api/corps/projects?category=${developmentType}`,
+        {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+      if (!response.ok) throw new Error("Failed to fetch projects");
+
+      const data = await response.json();
+
+      if (Array.isArray(data.projects)) {
+        const sortedProjects = data.projects
+          .filter((p) => p.startDate)
+          .sort((a, b) => new Date(b.startDate) - new Date(a.startDate));
+        setGraphs(sortedProjects);
+      } else {
+        setError("Invalid data format");
+        setGraphs([]);
+      }
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchProjects();
+  }, [developmentType]);
 
   const handleDevelopmentTypeChange = (event) => {
     setDevelopmentType(event.target.value);
   };
 
-  const handleAddGraph = (data) => {
-    setGraphs([...graphs, data]);
-    console.log("Graph added:", data);
+  const handleAddGraph = async (data) => {
+    try {
+      const response = await fetch("http://localhost:5000/api/corps/add", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) throw new Error("Failed to add project");
+
+      await response.json();
+      fetchProjects(); // Refresh list
+    } catch (error) {
+      console.error("Error adding project:", error);
+    }
   };
 
-  const handleDeleteGraph = (index) => {
-    const updatedGraphs = graphs.filter((_, i) => i !== index);
-    setGraphs(updatedGraphs);
+  const handleDeleteGraph = async (projectId) => {
+    try {
+      const response = await fetch(
+        `http://localhost:5000/api/corps/delete/${projectId}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      if (!response.ok) throw new Error("Failed to delete project");
+
+      fetchProjects(); // Refresh list
+    } catch (error) {
+      console.error("Error deleting project:", error);
+    }
+  };
+
+  const handleUpdateProject = (updatedProject) => {
+    setGraphs((prevGraphs) =>
+      prevGraphs.map((graph) =>
+        graph._id === updatedProject._id ? updatedProject : graph
+      )
+    );
   };
 
   return (
     <div>
-      {/* <Navbar /> */}
-
-      <div className="container mx-auto px-10 pt-2 pb-8">
+      <div className="container px-10 pt-2 pb-8 mx-auto">
         {/* Hero Section */}
-        <div className="relative bg-gray-100 py-1 rounded-lg shadow-lg overflow-hidden">
-          <div className="absolute inset-0">
-            <div className="absolute top-0 left-0 w-32 h-32 bg-gradient-to-br from-blue-400 to-purple-500 opacity-50 blur-2xl rounded-full"></div>
-            <div className="absolute bottom-0 right-0 w-40 h-40 bg-gradient-to-tl from-pink-400 to-purple-600 opacity-50 blur-2xl rounded-full"></div>
-          </div>
-          <h2 className="relative text-5xl font-extrabold text-center mt-2 mb-4 bg-gradient-to-r from-blue-600 via-purple-500 to-pink-500 text-transparent bg-clip-text animate-pulse">
+        <div className="relative py-1 overflow-hidden bg-gray-100 rounded-lg shadow-lg">
+          <h2 className="relative mt-2 mb-4 text-5xl font-extrabold text-center text-transparent bg-gradient-to-r from-blue-600 via-purple-500 to-pink-500 bg-clip-text animate-pulse">
             Welcome to Janmanch!!
           </h2>
         </div>
 
         {/* Welcome Card Section */}
-        <div className="flex flex-col md:flex-row gap-8 justify-center items-center pt-5">
+        <div className="flex flex-col items-center justify-center gap-8 pt-5 md:flex-row">
           <div className="w-full">
             <WelcomeCard />
           </div>
         </div>
 
         {/* Progress Section */}
-        <div className="flex justify-center items-center w-full mt-8">
-          <div className="relative cursor-pointer">
-            <span className="absolute top-0 left-0 w-full h-full mt-1 ml-1 bg-sky-600 rounded-lg"></span>
-            <button className="absolute py-1 z-10 px-3 -left-10 -top-4 -rotate-[10deg] border border-black bg-sky-600 text-white font-bold">
-              Your Corporator's Progress!
+        <div className="flex justify-center items-center w-full">
+    <div className="relative cursor-pointer ">
+        <span className="absolute top-0 left-0 w-full h-full mt-1 ml-1 bg-orange-500 rounded-lg"></span>
+        <div className="relative p-6 bg-white border-2 border-orange-500 rounded-lg hover:scale-105 transition duration-500">
+            
+            <button className="absolute py-1 px-3 -left-14 top-0 z-1 -rotate-[20deg] border-black bg-orange-600 text-white font-bold">
+                Corporator's Progress!
             </button>
-            <div className="relative p-8 bg-white border-2 border-sky-600 rounded-lg transition duration-500 hover:scale-105 max-w-4xl mx-auto">
-              <div className="flex items-center">
-                <h3 className="my-2 text-lg font-bold text-gray-800 mx-auto text-center">
-                  Explore the progress and milestones achieved by your dedicated Corporator over time!
+
+            <div className="flex items-center justify-center">
+                <h3 className="my-2 text-lg font-bold text-gray-800 text-center">
+                    Explore the progress and milestones achieved by your Corporator!
                 </h3>
-              </div>
-              <p className="text-gray-600 text-center mb-4">
-                Select a development type to view detailed updates.
-              </p>
-              <div className="flex justify-center">
-                <label htmlFor="development" className="mr-2 text-gray-800">
-                  Development Type:
-                </label>
+            </div>
+            
+            <p className="text-gray-600 text-center">
+                Select a development type:
+            </p>
+
+            <div className="flex justify-center mt-4">
                 <select
-                  id="development"
-                  value={developmentType}
-                  onChange={handleDevelopmentTypeChange}
-                  className="border p-2 rounded-md"
-                  aria-label="Select development type"
+                    value={developmentType}
+                    onChange={handleDevelopmentTypeChange}
+                    className="p-2 border rounded-md bg-slate-700 text-white shadow-2xl hover:bg-slate-600 shadow-slate-500"
                 >
-                  <option value="all">All</option>
-                  <option value="1">Education</option>
-                  <option value="2">Healthcare</option>
-                  <option value="3">Infrastructure</option>
+                    <option value="all">All</option>
+                    <option value="Education">Education</option>
+                    <option value="Roads">Roads</option>
+                    <option value="Water">Water</option>
+                    <option value="Healthcare">Healthcare</option>
+                    <option value="Infrastructure">Infrastructure</option>
                 </select>
-              </div>
             </div>
-          </div>
         </div>
+    </div>
+</div>
 
-        {/* Development Chart Section */}
-        <div className="mt-8">
-        {graphs.length === 0 ? (
-            <div className="flex justify-center items-center">
-            <div className="bg-gradient-to-br from-indigo-600 to-pink-600 p-1 rounded-md hover:scale-105 transition-transform duration-300 ease-in-out">
-                <div className="bg-white text-gray-500 text-lg font-semibold border border-gray-300 rounded-md p-4">
-                No data available to show.
+        <div className="mt-8 max-full">
+          {loading ? (
+            <p className="text-lg font-semibold text-center">
+              Loading projects...
+            </p>
+          ) : graphs.length > 0 ? (
+            // graphs.map((graph) => (
+            //   <DevelopmentChart
+            //     key={graph._id}
+            //     project={graph}
+            //     onUpdate={handleUpdateProject}
+            //   />
+            // ))
+            <div className="grid gap-10 p-4 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2">
+              {graphs.map((graph, index) => (
+                <div key={index} className="">
+                  <DevelopmentChart
+                    project={graph}
+                    onUpdate={handleUpdateProject}
+                  />
                 </div>
+              ))}
             </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center">
+              <p className="text-lg font-semibold text-center">
+                No projects available for this category.
+              </p>
             </div>
-        ) : developmentType === "all" ? (
-            graphs.map((graph, index) => (
-            <DevelopmentChart key={index} projectId={graph.projectId} />
-            ))
-        ) : (
-            (() => {
-            const filteredGraphs = graphs.filter(
-                (graph) => graph.projectId === developmentType
-            );
-            return filteredGraphs.length === 0 ? (
-                <div className="flex justify-center items-center">
-                <div className="bg-gradient-to-br from-indigo-600 to-pink-600 p-1 rounded-md hover:scale-105 transition-transform duration-300 ease-in-out">
-                    <div className="bg-white text-gray-500 text-lg font-semibold border border-gray-300 rounded-md p-4">
-                    No data available for the selected development type.
-                    </div>
-                </div>
-                </div>
-            ) : (
-                filteredGraphs.map((graph, index) => (
-                <DevelopmentChart key={index} projectId={graph.projectId} />
-                ))
-            );
-            })()
-        )}
+          )}
         </div>
       </div>
 
-      {/* Add and Delete Graph Buttons */}
-      <div className="flex justify-center space-x-4 mb-6">
-        <button
-          onClick={() => setIsAddModalOpen(true)}
-          className="bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-600"
-        >
-          Add Graph Data
-        </button>
-        <button
-          onClick={() => setIsDeleteModalOpen(true)}
-          className="bg-red-500 text-white px-6 py-2 rounded-md hover:bg-red-600"
-        >
-          Delete Graph Data
-        </button>
-      </div>
+      {userRole === "corporator" && (
+        <div className="flex flex-wrap justify-center gap-4 mb-6">
+          <button
+            onClick={() => setIsAddModalOpen(true)}
+            className="px-6 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600"
+          >
+            Add Project
+          </button>
+          <button
+            onClick={() => setIsDeleteModalOpen(true)}
+            className="px-6 py-2 text-white bg-red-500 rounded-md hover:bg-red-600"
+          >
+            Delete Project
+          </button>
+        </div>
+      )}
 
-      <Footer />
-
-      {/* Graph Input Modal */}
+      {/* Add Project Modal */}
       <GraphInputModal
         isOpen={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
         onSubmit={handleAddGraph}
       />
 
-      {/* Delete Graph Modal */}
+      {/* Delete Project Modal */}
       {isDeleteModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
-            <h2 className="text-lg font-bold mb-4">Delete Graph</h2>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="w-full max-w-md p-6 bg-white rounded-lg shadow-lg">
+            <h2 className="mb-4 text-lg font-bold">Delete a Project</h2>
             {graphs.length === 0 ? (
-              <p>No graphs available to delete.</p>
+              <p>No projects available.</p>
             ) : (
-              <ul className="space-y-4">
-                {graphs.map((graph, index) => (
-                  <li key={index} className="flex justify-between items-center">
-                    <div>
-                      <p className="font-semibold">
-                        Chart Type: {graph.chartType}
-                      </p>
-                      <p>Category: {graph.developmentCategory}</p>
-                    </div>
+              <ul>
+                {graphs.map((graph) => (
+                  <li
+                    key={graph._id}
+                    className="flex items-center justify-between"
+                  >
+                    <span>{graph.name}</span>
                     <button
-                      onClick={() => handleDeleteGraph(index)}
-                      className="bg-red-500 text-white px-2 py-1 rounded-md"
+                      onClick={() => handleDeleteGraph(graph._id)}
+                      className="px-2 py-1 my-2 text-white bg-red-500 rounded-md"
                     >
                       Delete
                     </button>
@@ -181,14 +231,12 @@ const HomePage = () => {
                 ))}
               </ul>
             )}
-            <div className="flex justify-end mt-4">
-              <button
-                onClick={() => setIsDeleteModalOpen(false)}
-                className="bg-gray-500 text-white px-4 py-2 rounded-md"
-              >
-                Close
-              </button>
-            </div>
+            <button
+              onClick={() => setIsDeleteModalOpen(false)}
+              className="px-4 py-2 mt-4 text-white bg-gray-500 rounded-md"
+            >
+              Close
+            </button>
           </div>
         </div>
       )}

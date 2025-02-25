@@ -1,119 +1,96 @@
 import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-// import { loginUser } from "../actions/userActions";
-import { BeatLoader } from "react-spinners";
+import { useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import axios from "axios";
+import { Link } from "react-router-dom";
+import "../images/voting.png";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+  const navigate = useNavigate();
 
-//   const dispatch = useDispatch();
-//   const loginState = useSelector((state) => state.logintealucer);
-//   const { loading, error, userInfo } = loginState;
+  // Redirect if already logged in
+  useEffect(() => {
+    const token = localStorage.getItem("userToken");
+    const role = localStorage.getItem("userRole");
+    if (token) {
+      navigate(role === "corporator" ? "/" : "/");
+    }
 
-  const submitHandler = (e) => {
+    setIsCheckingAuth(false); // Mark auth check as complete
+  }, []);
+
+  const submitHandler = async (e) => {
     e.preventDefault();
-    dispatch(loginUser(email, password));
+    setLoading(true);
 
-    toast.info("Attempting to log in...", {
-      autoClose: 2000,
-      position: "top-center",
-      theme: "coloteal",
-    });
+    try {
+      const { data } = await axios.post(
+        "http://localhost:5000/api/auth/login",
+        { email, password },
+        { withCredentials: true }
+      );
+
+      toast.success("Login successful! Redirecting...");
+
+      localStorage.setItem("userId", data.userId);
+      localStorage.setItem("userToken", data.token);
+      localStorage.setItem("userRole", data.role);
+
+      // Delayed redirection to avoid flickering
+      setTimeout(() => {
+        navigate(data.role === "corporator" ? "/" : "/");
+      }, 500);
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Login failed!");
+    } finally {
+      setLoading(false);
+    }
   };
 
-//   useEffect(() => {
-    // const urlParams = new URLSearchParams(window.location.search);
-    // const signupSuccess = urlParams.get("signupSuccess");
-
-    // If the signupSuccess flag is true, show a success toast
-    // if (signupSuccess) {
-    //   toast.success("Signup successful! You can now log in.");
-    // }
-    
-    // if (userInfo) {
-    //   const user = JSON.parse(localStorage.getItem('currentUser')); // Parse the JSON string
-    
-    //   if (user && !user.isAdmin) {
-    //     toast.success("Welcome back! tealirecting to your dashboard...", {
-    //       autoClose: 3000,
-    //       position: "top-center",
-    //       theme: "coloteal",
-    //     });
-    
-    //     setTimeout(() => {
-    //       window.location.href = "/menu";
-    //     }, 3000);
-    //   } else if (user && user.isAdmin) {
-    //     toast.success("Welcome back! Boss...", {
-    //       autoClose: 3000,
-    //       position: "top-center",
-    //       theme: "coloteal",
-    //     });
-    
-    //     setTimeout(() => {
-    //       window.location.href = "/admin";
-    //     }, 3000);
-    //   }
-    // }
-    
-
-
-
-//     if (error) {
-//       toast.error(error, {
-//         autoClose: 3000,
-//         position: "top-center",
-//         theme: "coloteal",
-//       });
-//     }
-//   }, [userInfo, error]);
+  // Prevent rendering until auth check is complete
+  if (isCheckingAuth) return null;
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+    <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <ToastContainer />
-
-      <div className="flex flex-col md:flex-row bg-white rounded-lg shadow-lg overflow-hidden max-w-4xl w-full border-2 border-gray-200">
+      <div className="flex flex-col w-full max-w-4xl overflow-hidden bg-white border-2 border-gray-200 rounded-lg shadow-lg md:flex-row">
         <div
-          className="hidden md:block md:w-1/2 bg-cover bg-center"
+          className="hidden bg-center bg-cover md:block md:w-1/2"
           style={{
-            backgroundImage: `url('./src/images/voting.png')`,
-            clipPath: 'polygon(0% 0%, 91% 0, 100% 51%, 90% 100%, 0% 100%)',
+            backgroundImage: `url('../src/images/voting.png')`,
+            clipPath: "polygon(0% 0%, 91% 0, 100% 51%, 90% 100%, 0% 100%)",
           }}
         ></div>
 
-        <div className="w-full md:w-1/2 p-8">
-          <h2 className="text-4xl font-extrabold text-teal-500 mb-6 text-center">
+        <div className="w-full p-8 md:w-1/2">
+          <h2 className="mb-6 text-4xl font-extrabold text-center text-teal-500">
             Welcome Back!
           </h2>
-          <p className="text-gray-600 text-center mb-6">
+          <p className="mb-6 text-center text-gray-600">
             Your Janmanch awaits. Log in below.
           </p>
 
-          {/* {loading && (
-            <div className="flex justify-center items-center mb-4">
-              <BeatLoader color="#ff4d4d" loading={loading} size={15} />
-            </div>
-          )} */}
-
-          {/* Display Error Inline */}
-          {/* {error && (
-            <p className="text-center text-teal-500 font-medium mb-4">
-              {error}
-            </p>
-          )} */}
+          {loading && (
+            <p className="text-center text-gray-500">Logging in...</p>
+          )}
 
           <form className="space-y-6" onSubmit={submitHandler}>
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Email Address
               </label>
               <input
-                requiteal
+                required
                 type="email"
                 id="email"
                 value={email}
@@ -124,12 +101,15 @@ const LoginPage = () => {
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Password
               </label>
               <div className="relative">
                 <input
-                  requiteal
+                  required
                   type={showPassword ? "text" : "password"}
                   id="password"
                   value={password}
@@ -142,40 +122,30 @@ const LoginPage = () => {
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-2.5 text-gray-600 hover:text-gray-800"
                 >
-                  {showPassword ? <FaEyeSlash size={20} /> : <FaEye size={20} />}
+                  {showPassword ? (
+                    <FaEyeSlash size={20} />
+                  ) : (
+                    <FaEye size={20} />
+                  )}
                 </button>
               </div>
             </div>
 
-            <div className="flex items-center justify-between">
-              <label className="flex items-center space-x-2">
-                <input type="checkbox" className="h-4 w-4 text-teal-500" />
-                <span className="text-sm text-gray-600">Remember Me</span>
-              </label>
-              <a href="/forgot-password" className="text-sm text-teal-500 hover:underline">
-                Forgot Password?
-              </a>
-            </div>
-
             <button
               type="submit"
-              className="w-full bg-gradient-to-r from-teal-400 to-teal-500 text-white font-bold py-2 px-4 rounded-lg hover:from-teal-600 hover:to-teal-800 transition-all duration-300"
+              className="w-full px-4 py-2 font-bold text-white transition-all duration-300 rounded-lg bg-gradient-to-r from-teal-400 to-teal-500 hover:from-teal-600 hover:to-teal-800"
+              disabled={loading}
             >
-              Log In
+              {loading ? "Logging in..." : "Log In"}
             </button>
           </form>
 
-          <div className="flex items-center my-6">
-            <div className="border-t flex-grow border-gray-300"></div>
-            <span className="mx-2 text-gray-400">OR</span>
-            <div className="border-t flex-grow border-gray-300"></div>
-          </div>
-
+          {/* Sign Up Link */}
           <p className="mt-6 text-center text-gray-600">
             Don't have an account?{" "}
-            <a href="/signup" className="text-teal-500 hover:underline">
+            <Link to="/signup" className="text-teal-500 hover:underline">
               Sign Up
-            </a>
+            </Link>
           </p>
         </div>
       </div>
