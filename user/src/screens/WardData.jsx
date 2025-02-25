@@ -59,7 +59,7 @@ const ImageSlider = () => {
 // WardDetailsTab Component
 const ward15BDetails = {
   name: "Ward 15 B",
-  representative: "Alice Johnson",
+  representative: "Shailajatai More",
   contact: "1122334455",
   population: "18,500",
   facilities: ["Hospital", "Public Library", "Community Park", "Sports Complex"],
