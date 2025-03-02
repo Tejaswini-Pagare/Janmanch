@@ -5,6 +5,8 @@ import "./App.css";
 // Components
 import Navbar from "./components/Navigation/Navbar";
 import Footer from "./components/Navigation/Footer";
+import Corp_chatbox from "./components/Chatbot/Corp_chatbox";
+import ContactUs from "./screens/ContactUs";
 
 // Screens
 import LoginPage from "./screens/Login";
@@ -19,6 +21,9 @@ import CorporatorDetails from "./screens/CorporatorDetails";
 import NotFound from "./screens/NotFound";
 import UserInfo from "./screens/UserInfo";
 import Chatbox from './components/Chatbot/chatbox'
+import GrievanceList from "./screens/GrievanceList";
+
+
 
 function App() {
   const [userRole, setUserRole] = useState(null);
@@ -68,7 +73,6 @@ function App() {
                 <Route path="/ward-details" element={<WardData />} />
                 <Route path="/corporator-details" element={<CorporatorDetails />} />
                 <Route path='/user-info' element={<UserInfo/>}/>
-                
                 <Route path="*" element={<NotFound />} />
               </>
             )}
@@ -77,6 +81,7 @@ function App() {
               <>
                 <Route path="/" element={<CorporatorHome />} />
                 <Route path="/community" element={<CorporatorCommunity />} />
+                <Route path="/citizen-voice" element={<GrievanceList />} />
                 <Route path="/ward-details" element={<WardData />} />
                 <Route path="/corporator-details" element={<CorporatorDetails />} />
                 <Route path="*" element={<NotFound />} />
@@ -93,8 +98,13 @@ function App() {
     
       {userRole === "user" && (
               <Chatbox/>
+            
             )}
-      
+      {userRole === "corporator" && (
+              <Corp_chatbox/>
+            )}
+
+      <ContactUs/>
       <Footer />
     </>
   );

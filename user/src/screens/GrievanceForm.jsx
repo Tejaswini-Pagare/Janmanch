@@ -1,27 +1,52 @@
-import React, { useState } from "react";
-import Navbar from "../components/Navigation/Navbar";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const GrievanceForm = () => {
   const [formData, setFormData] = useState({
     submissionType: "",
     category: "",
     description: "",
-    image: null,
+    file: null,
+    userid: "user_" + localStorage.getItem("userId"),
     location: { latitude: null, longitude: null },
   });
 
-  const [lastSubmission, setLastSubmission] = useState(null);
-  const [confirmationMessage, setConfirmationMessage] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
   const [mapVisible, setMapVisible] = useState(false);
+
+  useEffect(() => {
+    const userIdFromStorage = localStorage.getItem("userId");
+    setFormData((prevData) => ({
+      ...prevData,
+      userid: "user_" + userIdFromStorage,
+    }));
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleImageChange = (e) => {
-    setFormData({ ...formData, image: e.target.files[0] });
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+
+    if (file) {
+      const allowedFormats = ["image/jpeg", "image/jpg", "image/png"];
+      const maxSize = 5 * 1024 * 1024; // 5MB
+
+      if (!allowedFormats.includes(file.type)) {
+        toast.error("Invalid file format. Only JPG, JPEG, and PNG are allowed.");
+        return;
+      }
+
+      if (file.size > maxSize) {
+        toast.error("File size exceeds 5MB limit.");
+        return;
+      }
+
+      setFormData({ ...formData, file });
+    }
   };
 
   const handleLocation = () => {
@@ -36,46 +61,64 @@ const GrievanceForm = () => {
             },
           }));
           setMapVisible(true);
-          setErrorMessage("");
+          toast.success("Location fetched successfully!");
         },
-        (error) => {
-          switch (error.code) {
-            case error.PERMISSION_DENIED:
-              setErrorMessage("Permission to access location was denied.");
-              break;
-            case error.POSITION_UNAVAILABLE:
-              setErrorMessage("Location information is unavailable.");
-              break;
-            case error.TIMEOUT:
-              setErrorMessage("The request to get your location timed out.");
-              break;
-            default:
-              setErrorMessage("An unknown error occurred while retrieving location.");
-          }
+        () => {
+          toast.error("Error retrieving location. Please allow location access.");
         }
       );
     } else {
-      setErrorMessage("Geolocation is not supported by this browser.");
+      toast.error("Geolocation is not supported by this browser.");
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setLastSubmission({
-      ...formData,
-      image: formData.image?.name || "No image uploaded",
-      location: `${formData.location.latitude}, ${formData.location.longitude}`,
-    });
-    setConfirmationMessage("Your submission has been received successfully!");
-    setErrorMessage("");
 
-    setTimeout(() => setConfirmationMessage(""), 5000);
+    if (!formData.submissionType || !formData.category || !formData.description) {
+      toast.error("Please fill all required fields.");
+      return;
+    }
+
+    const formDataToSend = new FormData();
+    formDataToSend.append("submissionType", formData.submissionType);
+    formDataToSend.append("category", formData.category);
+    formDataToSend.append("description", formData.description);
+    formDataToSend.append("userid", formData.userid);
+    formDataToSend.append("location", JSON.stringify(formData.location));
+
+    if (formData.file) {
+      formDataToSend.append("file", formData.file);
+    }
+
+    try {
+      await axios.post("/api/grievance/upload", formDataToSend, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      toast.success("Your grievance has been submitted successfully!");
+
+      // Reset form after successful submission
+      setFormData({
+        submissionType: "",
+        category: "",
+        description: "",
+        file: null,
+        userid: "user_" + localStorage.getItem("userId"),
+        location: { latitude: null, longitude: null },
+      });
+
+      setMapVisible(false);
+    } catch (error) {
+      toast.error("Error submitting grievance. Please try again.");
+    }
   };
 
   return (
-    <div className="p-6 max-w-4xl mx-auto text-center font-sans">
-      <h1 className="text-3xl font-bold text-gray-800 mb-6">Grievance Form</h1>
-      <form className="bg-gray-100 p-6 rounded-lg shadow-lg space-y-4" onSubmit={handleSubmit}>
+    <div className="p-6 max-w-2xl mx-auto text-center font-sans">
+      <h1 className="text-3xl font-bold font-serif text-gray-800 mb-6 border-b-2 py-3 shadow-lg">Grievance Form</h1>
+
+      <form className="bg-gray-100 p-6 rounded-lg shadow-lg space-y-4" onSubmit={handleSubmit} encType="multipart/form-data">
         <label className="block font-semibold text-left">Submission Type</label>
         <select name="submissionType" className="w-full p-2 border" value={formData.submissionType} onChange={handleInputChange} required>
           <option value="">-- Select Type --</option>
@@ -95,11 +138,13 @@ const GrievanceForm = () => {
         <label className="block font-semibold text-left">Description</label>
         <textarea name="description" className="w-full p-2 border" rows="5" placeholder="Describe your issue or suggestion..." value={formData.description} onChange={handleInputChange} required></textarea>
 
-        <label className="block font-semibold text-left">Upload Image (optional)</label>
-        <input type="file" name="image" className="w-full p-2 border" accept="image/*" onChange={handleImageChange} />
+        <label className="block font-semibold text-left">Upload File (JPG, JPEG, PNG - Max 5MB)</label>
+        <input type="file" name="file" onChange={handleFileChange} className="w-full p-2 border" />
 
-        <button type="button" onClick={handleLocation} className="w-full bg-teal-400 text-white p-3 rounded">Get Location</button>
-        
+        <button type="button" onClick={handleLocation} className="w-full bg-teal-400 text-white p-3 rounded">
+          Get Location
+        </button>
+
         {mapVisible && formData.location.latitude && (
           <div className="mt-4">
             <h3 className="text-lg font-bold">Your Location</h3>
@@ -115,19 +160,7 @@ const GrievanceForm = () => {
         <button type="submit" className="w-full bg-teal-500 text-white p-3 rounded">Submit</button>
       </form>
 
-      {errorMessage && <p className="text-red-600 font-semibold mt-4">{errorMessage}</p>}
-      {confirmationMessage && <p className="text-green-600 font-semibold mt-4">{confirmationMessage}</p>}
-
-      {lastSubmission && (
-        <div className="mt-8 p-4 bg-green-100 rounded shadow">
-          <h3 className="text-xl font-bold">Last Submission</h3>
-          <p><strong>Type:</strong> {lastSubmission.submissionType}</p>
-          <p><strong>Category:</strong> {lastSubmission.category}</p>
-          <p><strong>Description:</strong> {lastSubmission.description}</p>
-          <p><strong>Image:</strong> {lastSubmission.image}</p>
-          <p><strong>Location:</strong> {lastSubmission.location}</p>
-        </div>
-      )}
+      <ToastContainer position="top-center" autoClose={3000} />
     </div>
   );
 };

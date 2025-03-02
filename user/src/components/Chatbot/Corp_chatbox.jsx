@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
 
-const Chatbox = () => {
+const Corp_chatbox = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
@@ -23,12 +23,17 @@ const Chatbox = () => {
 
           {/* Dialogflow Messenger */}
           <df-messenger
-            chat-icon="https://janmanch-deploys.netlify.app/chatbox_logo.png"
-            intent="WELCOME"
-            chat-title="CitizenBuddy"
-            agent-id="67237bdc-189b-4706-bd2f-fcf22679ea08"
-            language-code="en"
-          ></df-messenger>
+  chat-icon="https://janmanch-deploys.netlify.app/chatbox_logo.png"
+  intent="WELCOME"
+  chat-title="Citizen_Buddy"
+  agent-id="3fcf24f2-eece-4b05-a472-4e8f6fc75c42"
+  language-code="en"
+></df-messenger>
+
+
+
+
+
         {/* </div> */}
       )
     </div>
@@ -36,4 +41,4 @@ const Chatbox = () => {
 };
 
 
-export default Chatbox;
+export default Corp_chatbox;

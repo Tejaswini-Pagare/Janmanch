@@ -1,12 +1,47 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import ProfileMenu from "../Modal/ProfileDropdown";
+import { FiClock, FiCalendar } from "react-icons/fi";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
+
   const toggleMenu = () => setIsOpen(!isOpen);
   const closeMenu = () => setIsOpen(false);
+  const [time, setTime] = useState(new Date());
+  const [is24Hour, setIs24Hour] = useState(false);
+  const [showSeconds, setShowSeconds] = useState(true);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTime(new Date());
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  const formatTime = () => {
+    let hours = time.getHours();
+    const minutes = time.getMinutes().toString().padStart(2, "0");
+    const seconds = time.getSeconds().toString().padStart(2, "0");
+    const ampm = hours >= 12 ? "PM" : "AM";
+
+    if (!is24Hour) {
+      hours = hours % 12 || 12;
+    }
+
+    hours = hours.toString().padStart(2, "0");
+
+    return { hours, minutes, seconds, ampm };
+  };
+
+  const formatDate = () => {
+    const options = { weekday: "long", year: "numeric", month: "long", day: "numeric" };
+    return time.toLocaleDateString("en-US", options);
+  };
+
+  const { hours, minutes, seconds, ampm } = formatTime();
 
   const navLinks = [
     { name: "Home", to: "/" },
@@ -48,6 +83,30 @@ const Navbar = () => {
                 </Link>
               ))}
             </div>
+
+            {/* Digital Clock */}
+          <div className="flex items-center space-x-6">
+            <div className="hidden md:flex items-center space-x-2 text-gray-700">
+              <FiCalendar className="text-xl" />
+              <span className="text-sm">{formatDate()}</span>
+            </div>
+
+            <div className="relative group">
+              <div 
+                className="flex items-center space-x-1 bg-gray-100 rounded-lg px-4 py-2 cursor-pointer hover:bg-gray-200 transition-colors duration-200"
+                onClick={() => setIs24Hour(!is24Hour)}
+              >
+                <FiClock className="text-gray-700" />
+                <div className="text-2xl font-mono tracking-wider text-gray-800">
+                  <span>{hours}</span>
+                  <span className="animate-pulse">:</span>
+                  <span>{minutes}</span>
+                  {showSeconds && <><span className="animate-pulse">:</span><span>{seconds}</span></>}
+                  {!is24Hour && <span className="text-sm ml-1">{ampm}</span>}
+                </div>
+              </div>
+            </div>
+          </div>
 
             {/* Profile Section - Visible on Desktop */}
             <div className="hidden lg:flex items-center">
