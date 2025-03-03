@@ -62,6 +62,8 @@ router.post("/upload", upload.single("file"), async (req, res) => {
   }
 });
 
+let grievancesCache = []; // Define outside the route
+
 router.get("/get_grievance", async (req, res) => {
   try {
     const grievances = await Grievance.find({});

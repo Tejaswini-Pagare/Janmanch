@@ -19,6 +19,7 @@ const GrievanceList = () => {
         try {
             const response = await axios.get("/api/grievance/get_grievance");
             setGrievances(response.data);
+            localStorage.setItem("grievances", JSON.stringify(response.data));
             setFilteredGrievances(response.data);
             setLoading(false);
         } catch (error) {

@@ -14,7 +14,7 @@ const Corp_chatbox = () => {
   }, []);
 
   return (
-    <div className="fixed bottom-8 right-8 z-10">
+    <div className="fixed bottom-8 right-8 z-50">
       {/* Chatbox Toggle Button */}
       
         {/* <div className="relative h-[70vh] w-[25vw] min-w-[300px] border bg-white shadow-lg rounded-2xl flex flex-col mt-4">

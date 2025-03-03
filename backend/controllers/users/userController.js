@@ -7,7 +7,6 @@ import { Project } from "../../models/projectSchema.js";
 export const register = async (req, res) => {
   const { voterID, name, email, phoneNumber, password, confirmPassword } =
     req.body;
-
   try {
     if (
       !voterID ||
@@ -19,27 +18,21 @@ export const register = async (req, res) => {
     ) {
       return res.status(400).json({ message: "All fields are required!" });
     }
-
     if (password.length < 6) {
       return res
         .status(400)
         .json({ message: "Password must be at least 6 characters!" });
     }
-
     if (password !== confirmPassword) {
       return res.status(400).json({ message: "Passwords do not match!" });
     }
-
     const existingUser = await User.findOne({ email });
     const existingCorporator = await Corporator.findOne({ email });
-
     if (existingUser || existingCorporator) {
       return res.status(400).json({ message: "Email is already in use!" });
     }
-
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
-
     const newUser = new User({
       voterID,
       name,
@@ -47,11 +40,8 @@ export const register = async (req, res) => {
       phoneNumber,
       password: hashedPassword,
     });
-
     await newUser.save();
-
     generateToken(newUser._id, "user", res);
-
     res.status(201).json({
       _id: newUser._id,
       name: newUser.name,
@@ -122,15 +112,14 @@ export const getProjects = async (req, res) => {
 
 export const myProfile = async (req, res) => {
   console.log("Decoded user:", req.user);
-
   try {
     const user = await User.findById(req.user?.userId).select("name");
-
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
     res.json({ name: user.name });
+
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server error", error: error.message });
