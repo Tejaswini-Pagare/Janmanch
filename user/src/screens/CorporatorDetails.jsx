@@ -14,121 +14,64 @@ const CorporatorDetails = () => {
     image: corporatorImage,
   };
 
-  const oppositionCorporators = [
-    {
-      name: "Pratibha Bhalerao",
-      party: "NCP",
-      image: "oppositionImage",
-    },
-    {
-      name: "Sandhya Jagtap",
-      party: "Individual",
-      image: "oppositionImage",
-    },
-    {
-      name: "Sarita Sane",
-      party: "Shivsena",
-      image: "oppositionImage",
-    },
-    {
-      name: "Shubhangi Shinde",
-      party: "Congress",
-      image: "oppositionImage",
-    },
-  ];
-
   return (
-    <div>
-    {/* <Navbar/> */}
-    <div className="p-6 font-sans max-w-6xl mx-auto">
-      
+    <div className="p-4 sm:p-6 font-sans max-w-6xl mx-auto">
+      {/* <Navbar/> */}
       <div className="border rounded-lg p-6 bg-orange-400 shadow-lg mb-12">
-        <h2 className="text-2xl font-bold text-center mb-6 text-white border-b-2 border-slate-200 transition-transform shadow-lg rounded-lg pb-3">
+        <h2 className="text-2xl sm:text-3xl font-bold text-center mb-6 text-white border-b-2 border-slate-200 transition-transform shadow-lg rounded-lg pb-3">
           Corporator Details
         </h2>
-        <br />
-        <div className="flex flex-col md:flex-row items-center justify-center gap-11">
+        <div className="flex flex-col md:flex-row items-center justify-center gap-6 sm:gap-11">
           <img
             src={corporatorInfo.image}
             alt="Corporator"
-            className="w-60 h-60 rounded-full shadow-lg hover:shadow-teal-500 hover:scale-105 transition-transform mr-6 mb-6 md:mb-0"
+            className="w-40 h-40 sm:w-60 sm:h-60 rounded-full shadow-lg hover:shadow-teal-500 hover:scale-105 transition-transform"
           />
-          <ul className="space-y-3 text-center md:text-left">
+          <ul className="space-y-3 text-center md:text-left text-white">
             <li className="flex items-center">
-              <FaUserTie className="mr-3 text-xl text-white font-bold" />
-              <span className="text-lg font-bold text-white">Name: {corporatorInfo.name}</span>
+              <FaUserTie className="mr-2 sm:mr-3 text-lg sm:text-xl" />
+              <span className="text-base sm:text-lg font-bold">Name: {corporatorInfo.name}</span>
             </li>
             <hr />
             <li className="flex items-center">
-              <FaBalanceScale className="mr-3 text-xl text-white font-bold" />
-              <span className="text-lg font-bold text-white">Party: {corporatorInfo.party}</span>
+              <FaBalanceScale className="mr-2 sm:mr-3 text-lg sm:text-xl" />
+              <span className="text-base sm:text-lg font-bold">Party: {corporatorInfo.party}</span>
             </li>
             <hr />
             <li className="flex items-center">
-              <FaClock className="mr-3 text-xl text-white font-bold" />
-              <span className="text-lg font-bold text-white">Tenure: {corporatorInfo.tenure}</span>
+              <FaClock className="mr-2 sm:mr-3 text-lg sm:text-xl" />
+              <span className="text-base sm:text-lg font-bold">Tenure: {corporatorInfo.tenure}</span>
             </li>
             <hr />
             <li className="flex items-center">
-              <FaMoneyBillWave className="mr-3 text-xl text-white font-bold" />
-              <span className="text-lg font-bold text-white">Budget: {corporatorInfo.budget}</span>
+              <FaMoneyBillWave className="mr-2 sm:mr-3 text-lg sm:text-xl" />
+              <span className="text-base sm:text-lg font-bold">Budget: {corporatorInfo.budget}</span>
             </li>
             <hr />
             <li className="flex items-center">
-              <FaMoneyBillWave className="mr-3 text-xl text-white font-bold" />
-              <span className="text-lg font-bold text-white">Income: {corporatorInfo.income}</span>
+              <FaMoneyBillWave className="mr-2 sm:mr-3 text-lg sm:text-xl" />
+              <span className="text-base sm:text-lg font-bold">Income: {corporatorInfo.income}</span>
             </li>
-            <br /><br />
           </ul>
-          <br />
         </div>
       </div>
 
-      {/* <div className="border rounded-lg p-6 bg-gray-100 shadow-lg mb-10">
-        <h2 className="text-2xl font-bold text-center mb-10 text-gray-800">Opposition Corporators</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-          {oppositionCorporators.map((opponent, index) => (
-            <div
-              key={index}
-              className="relative flex flex-col items-center justify-center border rounded-lg p-4 bg-gray-200 shadow-md hover:shadow-lg transition-transform transform hover:scale-105 hover:bg-teal-300"
-            >
-              <img
-                src={opponent.image}
-                alt={opponent.name}
-                className="w-28 h-28 rounded-full mb-4 shadow-lg hover:scale-110 hover:shadow-teal-700 transition-transform absolute -top-10"
-              />
-              <div className="mt-12 text-center">
-                <p className="text-lg font-bold text-white font-semibold pt-8">{opponent.name}</p>
-                <p className="text-sm italic text-gray-600">{opponent.party}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div> */}
-
-      
-    </div>
-    <div className="border-2 border-slate-700 rounded-lg p-7 bg-gray-300 bg-opacity-50 shadow-lg w-11/12 justify-center items-center mx-auto justify-items-center gap-4 mb-10 flex flex-wrap">
-        <div className="bg-green-400 items-center justify-center p-4 rounded-lg shadow-lg w-3/12 text-center hover:scale-95 transition-transform">
-            <h1 className="text-5xl font-bold font-mono">10+</h1>
-            <span className="text-2xl font-semibold ">Grievances Solved</span>
-        </div>
-        <div className="bg-blue-400 items-center justify-center p-4 rounded-lg shadow-lg w-3/12 text-center hover:scale-95 transition-transform">
-            <h1 className="text-5xl font-bold font-mono">10+</h1>
-            <span className="text-2xl font-semibold">Grievances Solving</span>
-        </div>
-        <div className="bg-lime-400 items-center justify-center p-4 rounded-lg shadow-lg w-3/12 text-center hover:scale-95 transition-transform">
-            <h1 className="text-5xl font-bold font-mono">10+</h1>
-            <span className="text-2xl font-semibold">Grievances Received</span>
-        </div>
-        <div className="bg-yellow-400 items-center justify-center p-4 rounded-lg shadow-lg w-3/12 text-center hover:scale-95 transition-transform">
-            <h1 className="text-5xl font-bold font-mono ">10+</h1>
-            <span className="text-2xl font-semibold">Projects Developed</span>
-        </div>
-        <div className="bg-red-400 items-center justify-center p-4 rounded-lg shadow-lg w-3/12 text-center hover:scale-95 transition-transform ">
-            <h1 className="text-5xl font-bold font-mono">10+</h1>
-            <span className="text-2xl font-semibold">Projects Developing</span>
-        </div>
+      <div className="border-2 border-slate-700 rounded-lg p-6 sm:p-7 bg-gray-300 bg-opacity-50 shadow-lg w-full md:w-11/12 mx-auto flex flex-wrap gap-4 justify-center">
+        {[
+          { color: "bg-green-400", label: "Grievances Solved" },
+          { color: "bg-blue-400", label: "Grievances Solving" },
+          { color: "bg-lime-400", label: "Grievances Received" },
+          { color: "bg-yellow-400", label: "Projects Developed" },
+          { color: "bg-red-400", label: "Projects Developing" },
+        ].map((item, index) => (
+          <div
+            key={index}
+            className={`${item.color} items-center justify-center p-4 rounded-lg shadow-lg w-5/12 sm:w-3/12 text-center hover:scale-95 transition-transform`}
+          >
+            <h1 className="text-3xl sm:text-5xl font-bold font-mono">10+</h1>
+            <span className="text-lg sm:text-2xl font-semibold">{item.label}</span>
+          </div>
+        ))}
       </div>
     </div>
   );

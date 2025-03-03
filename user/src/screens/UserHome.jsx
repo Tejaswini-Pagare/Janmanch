@@ -27,7 +27,7 @@ const HomePage = () => {
         {
           method: "GET",
           headers: { "Content-Type": "application/json" },
-          credentials: "include", 
+          credentials: "include",
         }
       );
 
@@ -71,30 +71,39 @@ const HomePage = () => {
         </div>
 
         {/* Development Filter */}
-        <div className="flex items-center justify-center w-full mt-8">
-          <div className="relative w-full cursor-pointer">
-            <div className="relative w-full transition duration-1000 bg-blue-100 rounded-lg p-9 hover:scale-105">
-              <h3 className="mx-auto my-2 text-xl font-bold text-center text-gray-800">
-                Explore the progress of your ward achieved by your Corporator!
-              </h3>
-              <p className="mb-4 text-center text-gray-600">
-                Select a development type to view detailed updates.
+        <div className="flex justify-center items-center w-full">
+          <div className="relative cursor-pointer ">
+            <span className="absolute top-0 left-0 w-full h-full mt-1 ml-1 bg-orange-500 rounded-lg"></span>
+            <div className="relative p-6 bg-white border-2 border-orange-500 rounded-lg hover:scale-105 transition duration-500">
+
+              <button className="absolute py-1 px-3 -left-14 top-0 z-1 -rotate-[20deg] border-black bg-orange-600 text-white font-bold">
+                Corporator's Progress!
+              </button>
+
+              <div className="flex items-center justify-center">
+                <h3 className="my-2 text-lg font-bold text-gray-800 text-center">
+                  Explore the progress and milestones achieved by your Corporator!
+                </h3>
+              </div>
+
+              <p className="text-gray-600 text-center">
+                Select a development type:
               </p>
-              <div className="flex justify-center">
-                <label htmlFor="development" className="mr-2 text-gray-800">
-                  Development Type:
-                </label>
+
+              <div className="flex justify-center mt-4">
                 <select
-                  id="development"
                   value={developmentType}
-                  onChange={(e) => setDevelopmentType(e.target.value)}
-                  className="py-2 px-3 bg-blue-50 rounded-md text-[0.9rem]"
-                  aria-label="Select development type"
+                  onChange={(e) => {
+                    setDevelopmentType(e.target.value);
+                  }}
+                  className="p-2 border rounded-md bg-slate-700 text-white shadow-2xl hover:bg-slate-600 shadow-slate-500"
                 >
                   <option value="all">All</option>
-                  <option value="education">Education</option>
-                  <option value="healthcare">Healthcare</option>
-                  <option value="infrastructure">Infrastructure</option>
+                  <option value="Education">Education</option>
+                  <option value="Roads">Roads</option>
+                  <option value="Water">Water</option>
+                  <option value="Healthcare">Healthcare</option>
+                  <option value="Infrastructure">Infrastructure</option>
                 </select>
               </div>
             </div>
@@ -102,17 +111,23 @@ const HomePage = () => {
         </div>
 
         {/* Development Chart Section */}
-        <div className="mt-8">
+        <div className="mt-8 w-max-full">
           {loading ? (
             <p className="text-lg font-semibold text-center">
               Loading projects...
             </p>
           ) : projects.length > 0 ? (
+            <div className="grid gap-10 p-4 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2">
+              {
             projects.map((project) => (
-              <DevelopmentChart key={project._id} project={project} />
-            ))
+              <div className="">
+              <DevelopmentChart key={project._id} 
+              project={project} />
+              </div>
+            ))}
+            </div>
           ) : (
-            <p className="text-lg font-semibold text-center">
+            <p className="text-lg font-semibold text-center border-4 p-3 border-red-500 bg-red-600 bg-opacity-50 border-x-0">
               No projects available for this category.
             </p>
           )}
