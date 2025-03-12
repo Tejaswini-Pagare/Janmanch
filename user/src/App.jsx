@@ -20,6 +20,7 @@ import WardData from "./screens/WardData";
 import CorporatorDetails from "./screens/CorporatorDetails";
 import NotFound from "./screens/NotFound";
 import UserInfo from "./screens/UserInfo";
+
 import Chatbox from './components/Chatbot/chatbox'
 import GrievanceList from "./screens/GrievanceList";
 
@@ -72,7 +73,7 @@ function App() {
                 <Route path="/citizen-voice" element={<GrievanceForm />} />
                 <Route path="/ward-details" element={<WardData />} />
                 <Route path="/corporator-details" element={<CorporatorDetails />} />
-                <Route path='/user-info' element={<UserInfo/>}/>
+                <Route path='/profile' element={<UserInfo/>}/>
                 <Route path="*" element={<NotFound />} />
               </>
             )}

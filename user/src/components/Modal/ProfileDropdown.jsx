@@ -87,6 +87,9 @@ const ProfileMenu = ({ userImage }) => {
         >
           <li
             role="menuitem"
+            onClick={() => {
+              navigate("/profile")
+            }}
             className="flex items-center w-full p-3 text-sm text-gray-800 transition-all rounded-md cursor-pointer hover:bg-gray-100"
           >
             <svg
