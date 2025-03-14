@@ -19,8 +19,10 @@ const LoginPage = () => {
   useEffect(() => {
     const token = localStorage.getItem("userToken");
     const role = localStorage.getItem("userRole");
+
     if (token) {
-      navigate(role === "corporator" ? "/" : "/");
+      navigate("/");
+      // window.location.reload();
     }
 
     setIsCheckingAuth(false); // Mark auth check as complete

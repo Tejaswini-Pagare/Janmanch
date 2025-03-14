@@ -73,4 +73,28 @@ router.get("/get_grievance", async (req, res) => {
   }
 });
 
+router.put("/update_status/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    if (!status) {
+      return res.status(400).json({ message: "Status is required" });
+    }
+
+    const grievance = await Grievance.findById(id);
+    if (!grievance) {
+      return res.status(404).json({ message: "Grievance not found" });
+    }
+    console.log("Hellloooo")
+    grievance.status = status;
+    await grievance.save();
+
+    res.status(200).json({ message: "Grievance status updated successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Server error: " + error.message });
+  }
+});
+
+
 export default router;
