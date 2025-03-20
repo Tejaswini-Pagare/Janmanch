@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import axios from "axios";
-import { Link } from "react-router-dom";
-import "../images/voting.png";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -18,15 +16,11 @@ const LoginPage = () => {
   // Redirect if already logged in
   useEffect(() => {
     const token = localStorage.getItem("userToken");
-    const role = localStorage.getItem("userRole");
-
     if (token) {
       navigate("/");
-      // window.location.reload();
     }
-
     setIsCheckingAuth(false); // Mark auth check as complete
-  }, []);
+  }, [navigate]);
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -132,6 +126,10 @@ const LoginPage = () => {
                 </button>
               </div>
             </div>
+          <Link to="/forgotpassword" className="text-teal-500 hover:underline">
+          Forgot Password?
+          </Link>
+            
 
             <button
               type="submit"

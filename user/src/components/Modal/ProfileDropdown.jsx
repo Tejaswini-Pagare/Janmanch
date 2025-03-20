@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -5,12 +6,35 @@ import { toast } from "react-toastify";
 
 const ProfileMenu = ({ userImage }) => {
   const [isMenuOpen, setMenuOpen] = useState(false);
+  const [profilePic, setProfilePic] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [role, setRole] = useState(null);
   const menuRef = useRef(null);
   const navigate = useNavigate();
 
   const toggleMenu = () => {
     setMenuOpen((prev) => !prev);
   };
+
+   useEffect(() => {
+      const fetchUserProfile = async () => {
+        try {
+          const res = await axios.get("http://localhost:5000/api/users/me", {
+            withCredentials: true,
+          });
+          setProfilePic(res.data.profilePic);
+        } catch (error) {
+          console.error("Error fetching user profile:", error);
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      const storedRole = localStorage.getItem("userRole");
+    setRole(storedRole);
+  
+      fetchUserProfile();
+    }, []);
 
   const handleLogout = async () => {
     try {
@@ -28,6 +52,7 @@ const ProfileMenu = ({ userImage }) => {
       toast.success("Logged out successfully!");
 
       // Redirect to login page
+      window.location.reload();
       navigate("/login");
     } catch (error) {
       toast.error(error.response?.data?.message || "Logout failed!");
@@ -52,18 +77,18 @@ const ProfileMenu = ({ userImage }) => {
     <div className="relative flex items-center" ref={menuRef}>
       {/* Profile Icon */}
       <button type="button" className="focus:outline-none" onClick={toggleMenu}>
-        {userImage ? (
-          <div className="relative w-10 h-10 overflow-hidden rounded-full">
+        {profilePic ? (
+          <div className="relative w-14 h-14 overflow-hidden rounded-full p-1">
             <img
-              src={userImage}
+              src={profilePic}
               alt="User avatar"
               className="object-cover w-full h-full"
             />
           </div>
         ) : (
-          <div className="relative w-10 h-10 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600">
+          <div className="relative w-12 h-12 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600">
             <svg
-              className="absolute w-12 h-12 text-gray-400 -left-1"
+              className="absolute w-10 h-10 text-gray-400 left-1"
               fill="currentColor"
               viewBox="0 0 20 20"
               xmlns="http://www.w3.org/2000/svg"
@@ -87,9 +112,7 @@ const ProfileMenu = ({ userImage }) => {
         >
           <li
             role="menuitem"
-            onClick={() => {
-              navigate("/profile")
-            }}
+            onClick={() => role === "admin" ? navigate("/dashboard") : navigate("/profile")}
             className="flex items-center w-full p-3 text-sm text-gray-800 transition-all rounded-md cursor-pointer hover:bg-gray-100"
           >
             <svg
@@ -104,7 +127,10 @@ const ProfileMenu = ({ userImage }) => {
                 clipRule="evenodd"
               />
             </svg>
-            <p className="ml-2 font-medium">My Profile</p>
+            <p className="ml-2 font-medium" >
+            <span>{role === "admin" ? "Admin Dashboard" : "My Profile"}</span>
+              
+            </p>
           </li>
           {/* <li
             role="menuitem"

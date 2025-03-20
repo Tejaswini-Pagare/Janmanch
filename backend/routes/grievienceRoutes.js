@@ -73,6 +73,16 @@ router.get("/get_grievance", async (req, res) => {
   }
 });
 
+router.get("/get_grievance/:userId", async (req, res) => {
+  try {
+    const { userId } = req.params; // Get userId from the request parameters
+    const grievances = await Grievance.find({ userid: "user_"+userId }); // Filter grievances by userId
+    res.status(200).json(grievances);
+  } catch (error) {
+    res.status(500).json({ message: "Server error: " + error.message });
+  }
+});
+
 router.put("/update_status/:id", async (req, res) => {
   try {
     const { id } = req.params;

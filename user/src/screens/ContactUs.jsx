@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { AiOutlineMail } from "react-icons/ai";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import axios from "axios";
 
 const FloatingContactButton = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -18,14 +19,26 @@ const FloatingContactButton = () => {
     setRevealedEmail("janmanch.web@gmail.com");
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    toast.success("Message sent successfully!", {
-      position: "top-right",
-      autoClose: 3000,
-      theme: "colored",
-    });
-
+  
+    try {
+      const response = await axios.post("http://localhost:5000/api/contact/insert", formData);
+      console.log(response.data);
+      toast.success("Message sent successfully!", {
+        position: "top-right",
+        autoClose: 3000,
+        theme: "colored",
+      });
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to send message. Try again later.", {
+        position: "top-right",
+        autoClose: 3000,
+        theme: "colored",
+      });
+    }
+  
     // Optionally clear the form after submit
     setFormData({
       name: "",
@@ -34,6 +47,7 @@ const FloatingContactButton = () => {
       message: "",
     });
   };
+  
 
   const handleReset = (e) => {
     e.preventDefault();
@@ -55,7 +69,7 @@ const FloatingContactButton = () => {
     <>
       {/* Floating Contact Button */}
       <button title="contact us!"
-        className="fixed bottom-20 right-5 bg-red-600 hover:bg-red-700 text-white z-10 rounded-full shadow-lg flex items-center justify-center"
+        className=" bg-red-600 bottom-4 right-4 hover:bg-red-700 text-white z-10 rounded-full w-24 shadow-lg flex items-center justify-center"
         onClick={() => setIsModalOpen(true)}
       >
         <AiOutlineMail size={32} className="m-3" />

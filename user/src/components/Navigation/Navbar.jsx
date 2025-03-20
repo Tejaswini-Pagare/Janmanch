@@ -49,6 +49,7 @@ const Navbar = () => {
     { name: "Citizen's Voice", to: "/citizen-voice" },
     { name: "Ward Details", to: "/ward-details" },
     { name: "Corporator Details", to: "/corporator-details" },
+    { name: "Donate", to: "/donate" },
   ];
 
   return (

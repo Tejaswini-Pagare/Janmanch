@@ -2,15 +2,16 @@ import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema(
   {
-    voterID: { type: String, required: true },  
-    name: { type: String, required: true },     
+    voterID: { type: String, required: true },
+    name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     phoneNumber: { type: String, required: true },
     password: { type: String, required: true },
-    role: { type: String, default: "user" }, // Default role is 'user'
+    role: { type: String, default: "user" },
+    profilePic: { type: String, required: false },
   },
   {
-    timestamps: true, // Automatically add createdAt and updatedAt fields
+    timestamps: true,
   }
 );
 

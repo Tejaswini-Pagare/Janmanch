@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const UserRegistration = () => {
   const [formData, setFormData] = useState({
@@ -9,52 +11,70 @@ const UserRegistration = () => {
     phoneNumber: "",
     password: "",
     confirmPassword: "",
+    profilePic: "",
   });
 
   const [voterVerified, setVoterVerified] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
   const [focusedField, setFocusedField] = useState("");
+
+  const navigate = useNavigate();
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleFocus = (fieldName) => {
-    setFocusedField(fieldName);
+  const handleFileChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const fileData = new FormData();
+    fileData.append("file", file);
+    fileData.append("upload_preset", "user_profile_upload");
+
+    try {
+      const response = await axios.post(
+        "https://api.cloudinary.com/v1_1/dlkuwbjzr/image/upload",
+        fileData
+      );
+
+      setFormData((prev) => ({
+        ...prev,
+        profilePic: response.data.secure_url, // ✅ Store Cloudinary URL
+      }));
+    } catch (error) {
+      toast.error("Failed to upload profile picture. Try again.");
+    }
   };
 
-  const handleBlur = () => {
-    setFocusedField("");
-  };
+  const handleFocus = (fieldName) => setFocusedField(fieldName);
+
+  const handleBlur = () => setFocusedField("");
 
   const handleVoterIDCheck = async () => {
     const { voterID } = formData;
     const voterIDRegex = /^[A-Za-z]{3}[0-9]{7}$/;
 
     if (!voterIDRegex.test(voterID)) {
-      setErrorMessage("Invalid voter ID format.");
+      toast.error("Invalid voter ID format.");
       return;
     }
 
     try {
       const response = await axios.get(
-        `http://localhost:5000/api/auth/verify-voter?voterid=${formData.voterID}`
+        `http://localhost:5000/api/auth/verify-voter?voterid=${voterID}`
       );
 
       if (response.data.verified) {
         setVoterVerified(true);
-        setErrorMessage("");
-        setSuccessMessage("Voter ID verified successfully!");
-        setTimeout(() => setSuccessMessage(""), 3000);
+        toast.success("Voter ID verified successfully!"); 
       } else {
         setVoterVerified(false);
-        setErrorMessage("Voter ID not found. Please enter a valid voter ID.");
+        toast.error("Voter ID not found. Please enter a valid voter ID.");
       }
     } catch (error) {
       setVoterVerified(false);
-      setErrorMessage("Error verifying voter ID. Please try again.");
+      toast.error("Error verifying voter ID. Please try again.");
     }
   };
 
@@ -62,38 +82,39 @@ const UserRegistration = () => {
     const { name, email, phoneNumber, password, confirmPassword } = formData;
 
     if (!name || !email || !phoneNumber || !password || !confirmPassword) {
-      setErrorMessage("All fields are required.");
+      toast.error("All fields are required.");
       return false;
     }
 
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      setErrorMessage("Invalid email format.");
+      toast.error("Invalid email format.");
       return false;
     }
 
     if (!/^[0-9]{10}$/.test(phoneNumber)) {
-      setErrorMessage("Phone number must be 10 digits.");
+      toast.error("Phone number must be 10 digits.");
       return false;
     }
 
     if (password !== confirmPassword) {
-      setErrorMessage("Passwords do not match.");
+      toast.error("Passwords do not match.");
       return false;
     }
 
-    setErrorMessage("");
     return true;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!validateForm()) return; // Stop if validation fails
+    if (!validateForm()) return;
+
+    console.log("Sending Data:", formData); 
 
     try {
       const response = await axios.post(
         "http://localhost:5000/api/auth/register",
-        formData,
+        { ...formData },
         {
           headers: {
             "Content-Type": "application/json",
@@ -101,25 +122,16 @@ const UserRegistration = () => {
         }
       );
 
-      setSuccessMessage("Registration successful! You can now log in.");
-      setErrorMessage("");
-      window.location.href="/login"
-
-      // Reset form after successful registration
-      setFormData({
-        voterID: "",
-        name: "",
-        email: "",
-        phoneNumber: "",
-        password: "",
-        confirmPassword: "",
-      });
-
-      setVoterVerified(false);
-
-      setTimeout(() => setSuccessMessage(""), 5000);
+      toast.success("Registration successful! Redirecting to login...");
+      setTimeout(() => {
+        navigate("/login");
+      }, 1500);
     } catch (error) {
-      setErrorMessage(
+      console.error(
+        "Error in registration:",
+        error.response?.data || error.message
+      );
+      toast.error(
         error.response?.data?.message || "Registration failed. Try again."
       );
     }
@@ -131,10 +143,10 @@ const UserRegistration = () => {
     }`;
 
   return (
-    <div className="max-w-lg p-8 mx-auto font-sans text-center h-screen bg-gray-100"> 
+    <div className="max-w-lg p-8 mx-auto font-sans text-center"> 
       <h2 className="mb-6 text-2xl font-bold">User Registration</h2>
       <form
-        className="p-6 pb-2 space-y-4 bg-white border border-gray-200 rounded-lg shadow-lg items-center"
+        className="p-6 pb-2 space-y-4 bg-white border border-gray-200 rounded-lg shadow-lg"
         onSubmit={handleSubmit}
       >
         <div>
@@ -155,23 +167,36 @@ const UserRegistration = () => {
           />
           <button
             type="button"
-            className="w-full py-2 pt-3 mt-5 font-semibold text-white transition duration-300 bg-teal-600 rounded hover:bg-teal-700"
+            className="w-full py-2 mt-3 font-semibold text-white bg-teal-600 rounded hover:bg-teal-700"
             onClick={handleVoterIDCheck}
           >
             Verify Voter ID
           </button>
         </div>
 
-        {successMessage && (
-          <p className="mt-4 font-bold text-green-600">{successMessage}</p>
-        )}
-        {errorMessage && (
-          <p className="mt-4 font-bold text-red-600">{errorMessage}</p>
-        )}
-
         {voterVerified && (
-          <div className="pb-9">
-            <div className="">
+          <>
+            <div>
+              <label htmlFor="profilePicture" className="block font-semibold">
+                Profile Picture
+              </label>
+              <input
+                type="file"
+                id="profilePicture"
+                accept="image/*"
+                onChange={handleFileChange}
+                className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+              />
+              {formData.profilePicture && (
+                <img
+                  src={formData.profilePicture}
+                  alt="Profile"
+                  className="w-20 h-20 mt-2 rounded-full"
+                />
+              )}
+            </div>
+
+            <div>
               <label htmlFor="name" className={getLabelClass("name")}>
                 Name
               </label>
@@ -269,11 +294,11 @@ const UserRegistration = () => {
 
             <button
               type="submit"
-              className="w-full py-2 font-semibold text-white transition duration-300 bg-teal-600 rounded hover:bg-teal-700"
+              className="w-full py-2 font-semibold text-white bg-teal-600 rounded hover:bg-teal-700"
             >
               Register
             </button>
-          </div>
+          </>
         )}
       </form>
     </div>

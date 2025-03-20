@@ -1,49 +1,43 @@
 import bcrypt from "bcryptjs";
 import User from '../models/userSchema.js';
+import Project from '../models/projectSchema.js'; // Import the Project model
+import cloudinary from 'cloudinary'; // Import Cloudinary
 import { generateToken } from "../utils/utils.js";
 
 export const register = async (req, res) => {
   const { email, password } = req.body;
   try {
-    // hash passwords using bcrypt.js
+    // Validate input
     if (!email || !password) {
       return res.status(400).json({ message: "All fields are required!" });
     }
     if (password.length < 6) {
-      // first check the password field validation
-      return res
-        .status(400)
-        .json({ message: "Password must be at least 6 characters!" });
+      return res.status(400).json({ message: "Password must be at least 6 characters!" });
     }
 
-    const user = await User.findOne({ email }); // check if it's an existing user
-    if (user) return res.status(400).json({ message: "User Already Exists" });
-    const salt = await bcrypt.genSalt(10); // generating hashed password for new user
+    // Check if user already exists
+    const user = await User.findOne({ email });
+    if (user) return res.status(400).json({ message: "User  Already Exists" });
+
+    // Hash password
+    const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    const newUser = new User({
-      // creating a new user
-      email, // same as email: email,
+    // Create new user
+    const newUser  = new User({
+      email,
       password: hashedPassword,
     });
 
-    if (newUser) {
-      // generate JWT token
-      generateToken(newUser._id, res); // calling a function to generate token and send it using cookie to user ..... newuser._id is the unique field assigned by MongoDb to each document
+    // Save user and generate token
+    await newUser .save();
+    generateToken(newUser ._id, res);
 
-      await newUser.save(); // saving user to database
-
-      // console.log(salt);
-      // console.log(hashedPassword);
-      res.status(201).json({
-        _id: newUser._id,
-        fullName: newUser.fullName,
-        email: newUser.email,
-        profilePic: newUser.profilePic,
-      });
-    } else {
-      res.status(400).json({ message: "Invalid User Data!" });
-    }
+    res.status(201).json({
+      _id: newUser ._id,
+      email: newUser .email,
+      profilePic: newUser .profilePic,
+    });
   } catch (error) {
     res.status(500).json({ message: "Internal Server Error" });
     console.log("Error in signup controller", error.message);
@@ -60,7 +54,6 @@ export const login = async (req, res) => {
     }
 
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
-
     if (!isPasswordCorrect) {
       return res.status(400).json({ message: "Invalid credentials!" });
     }
@@ -69,9 +62,8 @@ export const login = async (req, res) => {
 
     res.status(200).json({
       _id: user._id,
-      fullName: user.fullName,
       email: user.email,
-      proflePic: user.profilePic,
+      profilePic: user.profilePic,
     });
   } catch (error) {
     res.status(500).json({ message: "Internal Server Error!" });
@@ -81,7 +73,7 @@ export const login = async (req, res) => {
 
 export const logout = (req, res) => {
   try {
-    res.cookie("jwt", "", { maxAge: 0 }); // just clearing up the stored cookie of the user with name jwt , empty token and age of 0
+    res.cookie("jwt", "", { maxAge: 0 });
     res.status(200).json({ message: "Logged out successfully!" });
   } catch (error) {
     res.status(500).json({ message: "Internal Server Error!" });
@@ -89,7 +81,6 @@ export const logout = (req, res) => {
   }
 };
 
-// Get projects by category (common for users and corporators)
 export const getProjectsByCategory = async (req, res) => {
   const { category } = req.params;
 
@@ -98,13 +89,92 @@ export const getProjectsByCategory = async (req, res) => {
     const projects = await Project.find(query);
 
     if (!projects || projects.length === 0) {
-      return res
-        .status(404)
-        .json({ message: "No projects found for this category!" });
+      return res.status(404).json({ message: "No projects found for this category!" });
     }
 
     res.json(projects);
   } catch (error) {
-    res.status(500).json({ message: "Server error", error });
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+export const myProfile = async (req, res) => {
+  try {
+    const user = await User.findById(req.user?.userId).select("name email phoneNumber voterID profilePic");
+
+    if (!user) {
+      return res.status(404).json({ message: "User  not found" });
+    }
+
+    res.json({
+      name: user.name,
+      email: user.email,
+      phoneNumber: user.phoneNumber,
+      voterID: user.voterID,
+      profilePic: user.profilePic,
+    });
+  } catch (error) {
+    console.error("Error fetching profile:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+export const updateProfile = async (req, res) => {
+  const { email, phoneNumber, password, profilePic } = req.body;
+
+  try {
+    let updatedData = {};
+
+    if (email) updatedData.email = email;
+    if (phoneNumber) updatedData.phoneNumber = phoneNumber;
+
+    if (password) {
+      const salt = await bcrypt.genSalt(10);
+      updatedData.password = await bcrypt.hash(password, salt);
+    }
+
+    if (profilePic) {
+      if (!profilePic.startsWith("http")) {
+        try {
+          const uploadedResponse = await cloudinary.uploader.upload(
+            profilePic,
+            {
+              folder: "user_profiles",
+              public_id: `profile_${req.user.userId}_${Date.now()}`, // Use backticks
+              allowed_formats: ["jpg", "jpeg", "png"],
+              transformation: [{ width: 300, height: 300, crop: "fill" }],
+              overwrite: true,
+            }
+          );
+          console.log("Cloudinary URL:", uploadedResponse.secure_url);
+          updatedData.profilePic = uploadedResponse.secure_url;
+        } catch (uploadError) {
+          console.error("Error uploading to Cloudinary:", uploadError);
+          return res.status(400).json({ message: "Failed to upload image" });
+        }
+      } else {
+        updatedData.profilePic = profilePic;
+      }
+    }
+
+    const updatedUser  = await User.findByIdAndUpdate(
+      req.user.userId,
+      { $set: updatedData },
+      { new: true }
+    );
+
+    console.log("Updated User Data:", updatedUser );
+
+    res.status(200).json({
+      message: "Profile updated successfully",
+      user: {
+        email: updatedUser .email,
+        phoneNumber: updatedUser .phoneNumber,
+        profilePic: updatedUser .profilePic,
+      },
+    });
+  } catch (error) {
+    console.error("Error updating profile:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };
