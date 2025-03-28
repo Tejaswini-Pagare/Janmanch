@@ -23,7 +23,7 @@ const FloatingContactButton = () => {
     e.preventDefault();
   
     try {
-      const response = await axios.post("http://localhost:5000/api/contact/insert", formData);
+      const response = await axios.post("/api/contact/insert", formData);
       console.log(response.data);
       toast.success("Message sent successfully!", {
         position: "top-right",
@@ -69,10 +69,10 @@ const FloatingContactButton = () => {
     <>
       {/* Floating Contact Button */}
       <button title="contact us!"
-        className=" bg-red-600 bottom-4 right-4 hover:bg-red-700 text-white z-10 rounded-full w-24 shadow-lg flex items-center justify-center"
+        className=" bg-red-600 bottom-4 right-4 hover:bg-red-700 text-white z-10 rounded-full p-2 shadow-lg flex items-center justify-center"
         onClick={() => setIsModalOpen(true)}
       >
-        <AiOutlineMail size={32} className="m-3" />
+        <AiOutlineMail size={32} className="m-1" /> Report A Bug?
       </button>
 
       {/* Contact Modal */}

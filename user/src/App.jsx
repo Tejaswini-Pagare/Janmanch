@@ -61,7 +61,7 @@ function App() {
       }
       setLoading(false);
     }, 1000);
-  }, []);
+  });
 
   if (loading) {
     return <Loader />;
@@ -143,7 +143,9 @@ function App() {
             )}
 
       {/* <ContactUs/> */}
-      <Footer />
+      {
+        isAuthenticated && (<Footer />)
+      }
     </>
   );
 }

@@ -12,13 +12,16 @@ const Navbar = () => {
   const [time, setTime] = useState(new Date());
   const [is24Hour, setIs24Hour] = useState(false);
   const [showSeconds, setShowSeconds] = useState(true);
-
+  const [role, setRole] = useState(null);
   useEffect(() => {
     const timer = setInterval(() => {
       setTime(new Date());
     }, 1000);
+    const storedRole = localStorage.getItem("userRole");
+    setRole(storedRole);
 
     return () => clearInterval(timer);
+
   }, []);
 
   const formatTime = () => {
@@ -49,9 +52,11 @@ const Navbar = () => {
     { name: "Citizen's Voice", to: "/citizen-voice" },
     { name: "Ward Details", to: "/ward-details" },
     { name: "Corporator Details", to: "/corporator-details" },
-    { name: "Donate", to: "/donate" },
   ];
-
+  
+  if (role === "user") {
+    navLinks.push({ name: "Donate", to: "/donate" });
+  }
   return (
     <div>
       {/* Navbar */}

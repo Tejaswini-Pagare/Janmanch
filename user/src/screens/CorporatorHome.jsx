@@ -18,7 +18,7 @@ const HomePage = () => {
     setLoading(true);
     try {
       const response = await fetch(
-        `http://localhost:5000/api/corps/projects?category=${developmentType}`,
+        `/api/corps/projects?category=${developmentType}`,
         {
           method: "GET",
           headers: { "Content-Type": "application/json" },
@@ -54,12 +54,12 @@ const HomePage = () => {
 
   const handleAddGraph = async (data) => {
     try {
-      const response = await fetch("http://localhost:5000/api/corps/add", {
+      const response = await fetch("/api/corps/add", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
-
+      if(response.ok) toast.success("Project Added Successfully!");
       if (!response.ok) throw new Error("Failed to add project");
 
       await response.json();
@@ -72,7 +72,7 @@ const HomePage = () => {
   const handleDeleteGraph = async (projectId) => {
     try {
       const response = await fetch(
-        `http://localhost:5000/api/corps/delete/${projectId}`,
+        `/api/corps/delete/${projectId}`,
         {
           method: "DELETE",
         }

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Textarea } from "@nextui-org/react";
 
-const EditGraphModal = ({ isOpen, onClose, project, onSave }) => {
+const EditGraphModal = ({ isOpen, onClose, project, onSave, updating }) => {
   const [editedProject, setEditedProject] = useState(project || {});
 
   useEffect(() => {
@@ -17,6 +17,7 @@ const EditGraphModal = ({ isOpen, onClose, project, onSave }) => {
       [name]: value,
     }));
   };
+
   const addDataPoint = () => {
     setEditedProject((prevState) => ({
       ...prevState,
@@ -53,7 +54,7 @@ const EditGraphModal = ({ isOpen, onClose, project, onSave }) => {
       <div className="w-full max-w-md p-6 bg-white rounded-lg shadow-lg">
         <h2 className="mb-4 text-lg font-bold">Edit Graph Data</h2>
         <form>
-          <div className="mb-4 ">
+          <div className="mb-4">
             <Textarea
               label="Description"
               placeholder="Enter project description"
@@ -113,9 +114,10 @@ const EditGraphModal = ({ isOpen, onClose, project, onSave }) => {
             <button
               type="button"
               onClick={handleSubmit}
-              className="px-4 py-2 text-white bg-blue-500 rounded-md"
+              className="px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-700"
+              disabled={updating} // ✅ Disable button when updating
             >
-              Update Graph
+              {updating ? "Updating... Please Wait" : "Save Changes"}
             </button>
           </div>
         </form>

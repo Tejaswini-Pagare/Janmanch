@@ -21,6 +21,11 @@ const Footer = () => {
             <p className="text-gray-400 text-sm text-center md:text-left">
               Empowering communities with transparency & communication.
             </p>
+            <div className="mt-10">
+            <ContactUs/>
+
+            </div>
+            
           </div>
 
           {/* Navigation Links */}
@@ -28,9 +33,11 @@ const Footer = () => {
             <h3 className="text-lg font-semibold text-white mb-3">Quick Links</h3>
             <ul className="space-y-2">
               <li><a href="/" className="hover:text-orange-400 transition">Home</a></li>
-              <li><a href="/about" className="hover:text-orange-400 transition">About Us</a></li>
-              <li><a href="/services" className="hover:text-orange-400 transition">Services</a></li>
-              <li><a href="/contact" className="hover:text-orange-400 transition">Contact</a></li>
+              <li><a href="/community" className="hover:text-orange-400 transition">Community</a></li>
+              <li><a href="/citizen-voice" className="hover:text-orange-400 transition">Citizen's Voice</a></li>
+              <li><a href="/ward-details" className="hover:text-orange-400 transition">Ward Details</a></li>
+              <li><a href="/corporator-details" className="hover:text-orange-400 transition">Corporator Details</a></li>
+              {/* <li><a href="/contact" className="hover:text-orange-400 transition">Contact</a></li> */}
             </ul>
           </div>
 
@@ -43,12 +50,12 @@ const Footer = () => {
             <p className="text-gray-400 text-sm">Phone: +91 98765 43210</p>
 
             {/* Social Media Links */}
-            <div className="flex space-x-4 mt-3">
+            {/* <div className="flex space-x-4 mt-3">
               <a href="#" className="text-gray-400 hover:text-blue-500 text-lg"><FaFacebookF /></a>
               <a href="#" className="text-gray-400 hover:text-blue-400 text-lg"><FaTwitter /></a>
               <a href="#" className="text-gray-400 hover:text-pink-500 text-lg"><FaInstagram /></a>
               <a href="#" className="text-gray-400 hover:text-blue-600 text-lg"><FaLinkedinIn /></a>
-            </div>
+            </div> */}
           </div>
         </div>
 
@@ -56,7 +63,7 @@ const Footer = () => {
         <div className="border-t border-gray-700 mt-8 pt-4 text-center text-sm text-gray-500">
           © {new Date().getFullYear()} Janmanch. All Rights Reserved.
         </div>
-        <ContactUs/>
+        
       </div>
     </footer>
   );

@@ -364,7 +364,7 @@ export const deleteProject = async (req, res) => {
       return res.status(404).json({ message: "Project not found" });
     }
 
-    let corporator_id = "679cab2c26e28c3c630a6b55";
+    let corporator_id = "67dc51d5d459e99d8ed54fab";
     // Check if the logged-in user is the corporator who created the project
     if (project.corporator.toString() !== corporator_id.toString()) {
       console.log("Unauthorized deletion attempt");
@@ -407,7 +407,7 @@ export const addProject = async (req, res) => {
   try {
     const { name, visualizationType, category, description, startDate, data } =
       req.body;
-    const corporatorId = "679cab2c26e28c3c630a6b55"; // Hardcoded for now
+    const corporatorId = "67dc51d5d459e99d8ed54fab"; // Hardcoded for now
 
     if (
       !name ||
@@ -441,22 +441,22 @@ export const addProject = async (req, res) => {
     await newProject.save();
 
     // Fetch users before sending emails
-    const users = await User.find({}, "email name");
+    // const users = await User.find({}, "email name");
 
-    // Send notifications to all users asynchronously
-    await Promise.all(
-      users.map((user) =>
-        sendMail(
-          user.email,
-          user.name,
-          "🚀 New Project Added!",
-          `A new project **"${name}"** has been added. Stay updated with the latest developments!`,
-          "https://janmanch.com/projects"
-        ).catch((error) =>
-          console.error(`Email failed for ${user.email}:`, error.message)
-        )
-      )
-    );
+    // // Send notifications to all users asynchronously
+    // await Promise.all(
+    //   users.map((user) =>
+    //     sendMail(
+    //       user.email,
+    //       user.name,
+    //       "🚀 New Project Added!",
+    //       `A new project **"${name}"** has been added. Stay updated with the latest developments!`,
+    //       "https://janmanch.com/projects"
+    //     ).catch((error) =>
+    //       console.error(`Email failed for ${user.email}:`, error.message)
+    //     )
+    //   )
+    // );
 
     res
       .status(201)
@@ -477,7 +477,7 @@ export const updateProject = async (req, res) => {
       return res.status(404).json({ message: "Project not found" });
     }
 
-    let corporator_id = "679cab2c26e28c3c630a6b55"; // Hardcoded for now
+    let corporator_id = "67dc51d5d459e99d8ed54fab"; // Hardcoded for now
 
     if (project.corporator.toString() !== corporator_id) {
       return res
@@ -492,16 +492,16 @@ export const updateProject = async (req, res) => {
     await project.save();
 
     // Fetch all users and notify about the project update
-    const users = await User.find({}, "email name");
-    for (const user of users) {
-      await sendMail(
-        user.email,
-        user.name,
-        "🔔 Project Update Notification!",
-        `The project **"${project.name}"** has been updated. Click below to see the latest changes.`,
-        `https://janmanch.com/projects/${id}`
-      );
-    }
+    // const users = await User.find({}, "email name");
+    // for (const user of users) {
+    //   await sendMail(
+    //     user.email,
+    //     user.name,
+    //     "🔔 Project Update Notification!",
+    //     `The project **"${project.name}"** has been updated. Click below to see the latest changes.`,
+    //     `https://janmanch.com/projects/${id}`
+    //   );
+    // }
 
     res.status(200).json({ message: "Project updated successfully", project });
   } catch (error) {

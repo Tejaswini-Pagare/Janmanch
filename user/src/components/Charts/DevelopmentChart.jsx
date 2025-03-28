@@ -12,12 +12,14 @@ import {
   Bar,
 } from "recharts";
 import EditGraphModal from "../Modal/EditGraphModel";
+import { toast } from "react-toastify";
 
 const DevelopmentChart = ({ project, onUpdate }) => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [currentProject, setCurrentProject] = useState(null);
   const [isExpanded, setIsExpanded] = useState(false);
   const [userRole, setUserRole] = useState(null);
+  const [updating, setUpdating] = useState(false); // Added updating state
 
   const handleEditClick = (project) => {
     setCurrentProject(project);
@@ -27,13 +29,10 @@ const DevelopmentChart = ({ project, onUpdate }) => {
   useEffect(() => {
     const fetchUserRole = async () => {
       try {
-        const response = await fetch(
-          "http://localhost:5000/api/auth/check",
-          {
-            method: "GET",
-            credentials: "include", 
-          }
-        );
+        const response = await fetch("/api/auth/check", {
+          method: "GET",
+          credentials: "include",
+        });
 
         if (response.ok) {
           const data = await response.json();
@@ -49,39 +48,37 @@ const DevelopmentChart = ({ project, onUpdate }) => {
 
   const handleSaveChanges = async (updatedProject) => {
     try {
-      const response = await fetch(
-        `http://localhost:5000/api/corps/update/${updatedProject._id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            description: updatedProject.description,
-            data: updatedProject.data,
-          }),
-        }
-      );
+      setUpdating(true); // Start updating state
+      const response = await fetch(`/api/corps/update/${updatedProject._id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          description: updatedProject.description,
+          data: updatedProject.data,
+        }),
+      });
 
       const data = await response.json();
-
       if (response.ok) {
+        toast.success("Data Updated Successfully!");
         onUpdate(data.project); // Ensure the updated project is reflected in UI
         setModalOpen(false);
       } else {
-        console.error("Failed to update project:", data.message);
+        toast.error("Failed to update project: " + data.message);
       }
     } catch (error) {
+      toast.error("Error updating project: " + error.message);
       console.error("Error updating project:", error);
+    } finally {
+      setUpdating(false); // Reset updating state
     }
   };
 
   const formatDate = (date) => {
-    // YYYY-DD-MM
     const [year, day, month] = date.split("-");
-
     const validDate = `${year}-${month}-${day}`;
-
     const formattedDate = new Date(validDate);
 
     return formattedDate.toString() === "Invalid Date"
@@ -102,19 +99,15 @@ const DevelopmentChart = ({ project, onUpdate }) => {
     if (!project?.data || project.data.length === 0) return 0;
 
     const total = project.data.reduce((sum, dp) => sum + dp.value, 0);
-    return Math.min(total, 100); // Ensuring it doesn't exceed 100%
+    return Math.min(total, 100);
   };
 
   return (
     <div className="relative max-w-2xl p-4 mx-auto my-5 mb-1 bg-white border rounded-md shadow-lg">
-      {/* //  <div className="grid gap-6 p-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">  */}
-      <div className="relative flex items-center justify-center mb-5 ">
+      <div className="relative flex items-center justify-center mb-5">
         <h3 className="mb-2 text-lg font-semibold text-center">
           {project.name}
-          {/* <span className="text-gray-600">  ({calculateTotalProgress()}%)</span> */}
-          {/* ({project.visualizationType} chart) */}
         </h3>
-        {/* <div className="flex justify-center"> */}
         {userRole === "corporator" && (
           <button
             onClick={() => handleEditClick(project)}
@@ -123,7 +116,6 @@ const DevelopmentChart = ({ project, onUpdate }) => {
             Edit Project
           </button>
         )}
-        {/* </div> */}
       </div>
 
       <p className="mb-4 text-[1.1rem] font-semibold text-center text-gray-700">
@@ -172,6 +164,7 @@ const DevelopmentChart = ({ project, onUpdate }) => {
           project={currentProject}
           onClose={() => setModalOpen(false)}
           onSave={handleSaveChanges}
+          updating={updating} // Pass updating state to modal
         />
       )}
     </div>

@@ -40,9 +40,7 @@ const LoginPage = () => {
       localStorage.setItem("userRole", data.role);
 
       // Delayed redirection to avoid flickering
-      setTimeout(() => {
-        navigate(data.role === "corporator" ? "/" : "/");
-      }, 500);
+      window.location.reload();
     } catch (error) {
       toast.error(error.response?.data?.message || "Login failed!");
     } finally {

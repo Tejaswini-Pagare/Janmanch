@@ -116,11 +116,12 @@ export const login = async (req, res) => {
 
   try {
     let user = await User.findOne({ email });
-
+    console.log(user);
+    
     if (!user) {
       user = await Corporator.findOne({ email }); // Check in corporator schema
     }
-
+    console.log(user);
     if (!user) {
       return res.status(400).json({ message: "Invalid credentials!" });
     }
