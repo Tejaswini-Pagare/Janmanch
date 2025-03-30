@@ -8,7 +8,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://localhost:5000',
+        target: 'https://janmanch-cep.onrender.com',
         changeOrigin: true,
         secure: false, // Ensure this is set to false if you're using HTTP instead of HTTPS
       },

@@ -5,8 +5,6 @@ import { FiClock, FiCalendar } from "react-icons/fi";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
-
-
   const toggleMenu = () => setIsOpen(!isOpen);
   const closeMenu = () => setIsOpen(false);
   const [time, setTime] = useState(new Date());
