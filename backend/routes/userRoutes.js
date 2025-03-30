@@ -8,6 +8,7 @@ import {
 import {
   donateGoods,
   donateMoney,
+  getDonations,
 } from "../controllers/users/donationController.js";
 
 const router = express.Router();
@@ -22,5 +23,5 @@ router.get("/me", authMiddleware, myProfile);
 router.put("/update", authMiddleware, updateProfile);
 router.post("/goods", donateGoods);
 router.post("/money", donateMoney);
-
+router.post("/get_donations",getDonations)
 export default router;

@@ -57,6 +57,9 @@ const Navbar = () => {
   if (role === "user") {
     navLinks.push({ name: "Donate", to: "/donate" });
   }
+  if (role === "corporator") {
+    navLinks.push({ name: "Donations", to: "/donations" });
+  }
   return (
     <div>
       {/* Navbar */}

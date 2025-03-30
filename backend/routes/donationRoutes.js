@@ -31,4 +31,22 @@ router.post("/money", async (req, res) => {
   }
 });
 
+router.get("/get_donations", async (req, res) => {
+  try {
+    const donations = await MoneyDonation.find();
+    res.status(200).json(donations);
+  } catch (error) {
+    res.status(500).json({ message: "Server error: " + error.message });
+  }
+});
+
+router.get("/get_goods", async (req, res) => {
+  try {
+    const donations = await Donation.find();
+    res.status(200).json(donations);
+  } catch (error) {
+    res.status(500).json({ message: "Server error: " + error.message });
+  }
+})
+
 export default router;

@@ -56,3 +56,13 @@ export const donateMoney = async (req, res) => {
     res.status(500).json({ message: "Failed to process money donation." });
   }
 };
+
+export const getDonations = async (req, res) => {
+  try {
+    const donations = await Donation.find();
+    res.status(200).json(donations);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Failed to fetch donations." });
+  }
+};

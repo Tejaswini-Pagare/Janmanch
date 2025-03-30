@@ -193,9 +193,9 @@ const Donate = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-6 bg-gray-100">
-      <h1 className="mb-6 text-4xl font-bold text-gray-800">Donate to Your Ward</h1>
-      <div className="w-full max-w-lg p-8 bg-white shadow-lg rounded-xl">
+    <div className="flex flex-col items-center justify-center min-h-screen -mt-16 bg-gray-100">
+      <h1 className="mb-6 text-4xl font-bold text-gray-900">Donate to Your Ward</h1>
+      <div className="w-full max-w-lg p-8 bg-white shadow-lg rounded-xl mx-3">
         <label className="block mb-4 text-lg font-medium text-gray-700">Choose Donation Type:</label>
         <div className="flex space-x-6">
           <label className="flex items-center">

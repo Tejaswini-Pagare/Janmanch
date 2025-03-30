@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import MoneyDonation from "../models/MoneyDonation.js";
 import nodemailer from "nodemailer"; // ✅ Import nodemailer
 
+
 dotenv.config();
 const router = express.Router();
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
@@ -121,7 +122,7 @@ router.get("/verify-payment", async (req, res) => {
         <div style="max-width: 600px; margin: auto; padding: 20px; font-family: Arial, sans-serif; border: 1px solid #ddd; border-radius: 10px; background-color: #f9f9f9;">
           
           <div style="text-align: center;">
-            <img src="https://i.imgur.com/7Hk4H4b.png" alt="Thank You" style="width: 100px;"/>
+            <img src="./janmanch_logo.png" alt="Thank You" style="width: 100px;"/>
             <h2 style="color: #28a745;">Your Donation is Received!</h2>
           </div>
 
@@ -164,7 +165,7 @@ router.get("/verify-payment", async (req, res) => {
 
     await transporter.sendMail(mailOptions);
     console.log("✅ Donation confirmation email sent!");
-    alert("✅ Donation confirmation email sent!, Donation is Received!");
+    
     res.json(donation);
   } catch (error) {
     console.error("Error verifying payment:", error.message);

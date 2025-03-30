@@ -110,6 +110,7 @@ const ProfileMenu = ({ userImage }) => {
           className="absolute z-10 mt-2 w-48 rounded-lg border border-gray-200 bg-white p-1.5 shadow-lg focus:outline-none"
           style={{ top: "0", left: "-12rem" }}
         >
+          {role !== "corporator" && (
           <li
             role="menuitem"
             onClick={() => role === "admin" ? navigate("/dashboard") : navigate("/profile")}
@@ -127,11 +128,13 @@ const ProfileMenu = ({ userImage }) => {
                 clipRule="evenodd"
               />
             </svg>
-            <p className="ml-2 font-medium" >
-            <span>{role === "admin" ? "Admin Dashboard" : "My Profile"}</span>
-              
-            </p>
+            
+  <p className="ml-2 font-medium">
+    <span>{role === "admin" ? "Admin Dashboard" : "My Profile"}</span>
+  </p>
+
           </li>
+        )}
           {/* <li
             role="menuitem"
             className="flex items-center w-full p-3 text-sm text-gray-800 transition-all rounded-md cursor-pointer hover:bg-gray-100"

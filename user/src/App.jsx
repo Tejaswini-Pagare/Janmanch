@@ -28,6 +28,7 @@ import Chatbox from './components/Chatbot/chatbox'
 import GrievanceList from "./screens/GrievanceList";
 import ForgotPassword from "./screens/ForgotPassword";
 import Donate from './screens/Donate';
+import Donations from './screens/Donations';
 import ShowQueries from "./screens/ShowQuries";
 function App() {
   const [userRole, setUserRole] = useState(null);
@@ -111,6 +112,7 @@ function App() {
                 <Route path="/community" element={<CorporatorCommunity />} />
                 <Route path="/citizen-voice" element={<GrievanceList />} />
                 <Route path="/ward-details" element={<WardData />} />
+                <Route path='/donations' element={<Donations/>}/>
                 <Route path="/corporator-details" element={<CorporatorDetails />} />
                 <Route path="*" element={<NotFound />} />
               </>
