@@ -23,7 +23,7 @@ app.use(express.json());
 
 app.use(
   cors({
-    origin: ["http://localhost:5173", "https://janmanch.vercel.app"], // Allow both local and deployed frontend
+    origin: ["http://localhost:5173", "https://janmanch.netlify.app/"], // Allow both local and deployed frontend
     methods: "GET,POST,PUT,DELETE",
     credentials: true, // Allow cookies (if needed)
   })
