@@ -59,14 +59,14 @@ const LoginPage = () => {
         <div
           className="hidden bg-center bg-cover md:block md:w-1/2"
           style={{
-            backgroundImage: `url('src/images/voting.png')`,
+            backgroundImage: `url('/src/images/voting.png')`,
             clipPath: "polygon(0% 0%, 91% 0, 100% 51%, 90% 100%, 0% 100%)",
           }}
         ></div>
 
         <div className="w-full p-8 md:w-1/2">
           <h2 className="mb-6 text-4xl font-extrabold text-center text-teal-500">
-            Welcome Back!
+            Welcome Back!!
           </h2>
           <p className="mb-6 text-center text-gray-600">
             Your Janmanch awaits. Log in below.
