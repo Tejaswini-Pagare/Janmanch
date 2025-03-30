@@ -20,14 +20,14 @@ app.use(cookieParser());
 
 // Middlewares
 app.use(express.json());
+
 app.use(
   cors({
-    origin: "http://localhost:5173", // Update this if frontend URL changes
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true,
+    origin: ["http://localhost:5173", "https://janmanch.vercel.app"], // Allow both local and deployed frontend
+    methods: "GET,POST,PUT,DELETE",
+    credentials: true, // Allow cookies (if needed)
   })
 );
-
 // Routes
 app.use(express.static("public"));
 app.use(express.json({ verify: (req, res, buf) => { if (req.originalUrl === "/api/stripe/webhook") { req.rawBody = buf.toString(); } } }));
