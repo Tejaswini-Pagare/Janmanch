@@ -62,7 +62,7 @@ const UserRegistration = () => {
 
     try {
       const response = await axios.get(
-        `http://localhost:5000/api/auth/verify-voter?voterid=${voterID}`
+        `/api/auth/verify-voter?voterid=${voterID}`
       );
 
       if (response.data.verified) {
@@ -113,7 +113,7 @@ const UserRegistration = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/auth/register",
+        "/api/auth/register",
         { ...formData },
         {
           headers: {

@@ -110,9 +110,9 @@ function UserHistory() {
                         <div className="flex gap-6">
                             {selectedGrievance.file && (
                                 <div className="w-3/5 max-h-[60vh] overflow-hidden rounded-lg shadow-md border border-gray-300">
-                                    <a href={`http://localhost:5000/Images/${selectedGrievance.file}`} target="_blank" rel="noopener noreferrer">
+                                    <a href={`https://janmanch-cep.onrender.com/Images/${selectedGrievance.file}`} target="_blank" rel="noopener noreferrer">
                                         <img
-                                            src={`http://localhost:5000/Images/${selectedGrievance.file}`}
+                                            src={`https://janmanch-cep.onrender.com/Images/${selectedGrievance.file}`}
                                             alt="Grievance Image"
                                             className="w-full h-auto rounded-lg"
                                         />

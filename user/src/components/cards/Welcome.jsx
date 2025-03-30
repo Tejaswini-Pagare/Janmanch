@@ -99,7 +99,7 @@ const WelcomeCard = () => {
 
     const fetchUserName = async () => {
       try {
-        let response = await fetch("http://localhost:5000/api/corps/me", { credentials: "include" });
+        let response = await fetch("/api/corps/me", { credentials: "include" });
 
         if (response.ok) {
           let data = await response.json();
@@ -109,7 +109,7 @@ const WelcomeCard = () => {
           }
         }
 
-        response = await fetch("http://localhost:5000/api/users/me", { credentials: "include" });
+        response = await fetch("/api/users/me", { credentials: "include" });
         if (response.ok) {
           let data = await response.json();
           if (data?.name) {
@@ -161,7 +161,7 @@ const WelcomeCard = () => {
         </div>
 
         <div className="grid grid-cols-2 md:flex md:justify-center items-center mb-8 gap-4">
-          {["🚀Explore", "🌐Connect", "👥Engage", "🤝Contribute"].map((word, index) => (
+          {["🚀Explore", "🔗Connect", "👥Engage", "🤝Contribute"].map((word, index) => (
             <animated.div key={index} style={springs[0]} className="text-3xl font-semibold text-black text-center p-6 flex justify-center items-center font-[Poppins]">
               <BlurText text={word} delay={200} direction="top" className="text-center" />
             </animated.div>

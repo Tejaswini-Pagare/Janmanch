@@ -27,7 +27,7 @@ const UserInfo = () => {
     const fetchUserData = async () => {
       try {
         setLoading(true);
-        const res = await axios.get("http://localhost:5000/api/users/me", {
+        const res = await axios.get("/api/users/me", {
           withCredentials: true,
         });
         setUserInfo({ ...res.data, password: "" });
@@ -109,7 +109,7 @@ const fetchGrievances = async () => {
         ...(userInfo.password && { password: userInfo.password }),
         profilePic: userInfo.profilePic,
       };
-      await axios.put("http://localhost:5000/api/users/update", updatedData, {
+      await axios.put("/api/users/update", updatedData, {
         withCredentials: true,
       });
       toast.success("Profile updated successfully");

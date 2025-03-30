@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -19,7 +18,7 @@ const ProfileMenu = ({ userImage }) => {
    useEffect(() => {
       const fetchUserProfile = async () => {
         try {
-          const res = await axios.get("http://localhost:5000/api/users/me", {
+          const res = await axios.get("/api/users/me", {
             withCredentials: true,
           });
           setProfilePic(res.data.profilePic);
@@ -39,7 +38,7 @@ const ProfileMenu = ({ userImage }) => {
   const handleLogout = async () => {
     try {
       await axios.post(
-        "http://localhost:5000/api/auth/logout",
+        "/api/auth/logout",
         {},
         { withCredentials: true }
       );

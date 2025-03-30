@@ -4,6 +4,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { useNavigate, Link } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import axios from "axios";
+// import voting from "../src/images/voting.png";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -58,7 +59,7 @@ const LoginPage = () => {
         <div
           className="hidden bg-center bg-cover md:block md:w-1/2"
           style={{
-            backgroundImage: `url('../src/images/voting.png')`,
+            backgroundImage: `url('src/images/voting.png')`,
             clipPath: "polygon(0% 0%, 91% 0, 100% 51%, 90% 100%, 0% 100%)",
           }}
         ></div>

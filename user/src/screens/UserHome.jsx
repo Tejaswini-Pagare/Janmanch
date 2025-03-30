@@ -23,7 +23,7 @@ const HomePage = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:5000/api/users/projects?category=${category}`,
+        `/api/users/projects?category=${category}`,
         {
           method: "GET",
           headers: { "Content-Type": "application/json" },

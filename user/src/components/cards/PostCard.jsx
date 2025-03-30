@@ -86,7 +86,7 @@ function PostCard({ id, sentby, image, title, description, btnlikes, date, edita
             {/* Media */}
             {image && (
                 <div className="relative mb-4 cursor-pointer" onClick={openMediaModal}>
-                    {isImage && <img src={`http://localhost:5000/Images/${image}`} alt="Post media" className="object-cover h-72 w-full rounded-lg shadow-md" />}
+                    {isImage && <img src={`https://janmanch-cep.onrender.com/Images/${image}`} alt="Post media" className="object-cover h-72 w-full rounded-lg shadow-md" />}
                     {isPDF && (
                         <div className="flex items-center bg-gray-200 p-4 rounded-lg shadow-md">
                             <FaFilePdf size={40} className="text-red-600" />
@@ -114,11 +114,11 @@ function PostCard({ id, sentby, image, title, description, btnlikes, date, edita
             <button onClick={() => setIsMediaModalOpen(false)} className="absolute top-3 right-3 text-gray-600 text-2xl font-bold">✖</button>
             
             {selectedMedia && isImage && (
-                <img src={`http://localhost:5000/Images/${selectedMedia}`} alt="Preview" className="max-w-full max-h-full rounded-lg" />
+                <img src={`https://janmanch-cep.onrender.com/Images/${selectedMedia}`} alt="Preview" className="max-w-full max-h-full rounded-lg" />
             )}
 
             {selectedMedia && isPDF && (
-                <iframe src={`http://localhost:5000/Images/${selectedMedia}`} className="w-full h-full rounded-lg" title="PDF Preview"></iframe>
+                <iframe src={`https://janmanch-cep.onrender.com/Images/${selectedMedia}`} className="w-full h-full rounded-lg" title="PDF Preview"></iframe>
             )}
         </Dialog.Panel>
     </Dialog>

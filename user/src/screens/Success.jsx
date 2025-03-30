@@ -11,7 +11,7 @@ const Success = () => {
 
   useEffect(() => {
     if (sessionId) {
-      fetch(`http://localhost:5000/api/stripe/verify-payment?session_id=${sessionId}`)
+      fetch(`/api/stripe/verify-payment?session_id=${sessionId}`)
         .then((res) => res.json())
         .then((data) => {
           setTransaction(data);

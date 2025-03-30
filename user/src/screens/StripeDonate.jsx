@@ -9,7 +9,7 @@ const StripeDonate = () => {
   const [name, setName] = useState("");
   const [contact, setContact] = useState("");
   const [email, setEmail] = useState("");
-
+  const [loading, setLoading] = useState(false);
   const handlePayment = async () => {
     if (!amount || !name || !contact || !email) {
       toast.error("Please fill all fields.");
@@ -17,8 +17,9 @@ const StripeDonate = () => {
     }
 
     try {
+      setLoading(true);
       const stripe = await stripePromise;
-      const response = await fetch("http://localhost:5000/api/stripe/create-checkout-session", {
+      const response = await fetch("/api/stripe/create-checkout-session", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ amount, name, contact, email }),
