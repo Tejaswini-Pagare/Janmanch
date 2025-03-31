@@ -21,14 +21,13 @@ app.use(cookieParser());
 // Middlewares
 app.use(express.json());
 
-// app.use(
-//   cors({
-//     origin: ["http://localhost:5173", "https://janmanch.netlify.app/"], // Allow both local and deployed frontend
-//     methods: "GET,POST,PUT,DELETE",
-//     credentials: true, // Allow cookies (if needed)
-//   })
-// );
-app.use(cors({ origin: "https://janmanch.vercel.app" }));
+app.use(
+  cors({
+    origin: ["http://localhost:5173", "https://janmanch.netlify.app/"], // Allow both local and deployed frontend
+    methods: "GET,POST,PUT,DELETE",
+    credentials: true, // Allow cookies (if needed)
+  })
+);
 
 // Routes
 app.use(express.static("public"));

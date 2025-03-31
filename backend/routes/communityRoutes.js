@@ -17,6 +17,15 @@ router.get("/getallmessage", async (req, res) => {
   }
 });
 
+// router.get("/getallmessages", async (req, res) => {
+//   try {
+//     const msgs = await Community.find({ sentby: req.params.id });
+//     res.status(200).json(msgs);
+//   } catch (error) {
+//     res.status(500).json({ message: "Server error: " + error.message });
+//   }
+// });
+
 // 📌 Multer storage setup
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
