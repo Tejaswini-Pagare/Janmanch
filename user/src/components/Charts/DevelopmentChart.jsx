@@ -29,7 +29,7 @@ const DevelopmentChart = ({ project, onUpdate }) => {
   useEffect(() => {
     const fetchUserRole = async () => {
       try {
-        const response = await fetch("/api/auth/check", {
+        const response = await fetch("https://janmanch-cep.onrender.com/api/auth/check", {
           method: "GET",
           credentials: "include",
         });
@@ -49,7 +49,7 @@ const DevelopmentChart = ({ project, onUpdate }) => {
   const handleSaveChanges = async (updatedProject) => {
     try {
       setUpdating(true); // Start updating state
-      const response = await fetch(`/api/corps/update/${updatedProject._id}`, {
+      const response = await fetch(`https://janmanch-cep.onrender.com/api/corps/update/${updatedProject._id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

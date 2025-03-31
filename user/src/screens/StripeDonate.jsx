@@ -19,7 +19,7 @@ const StripeDonate = () => {
     try {
       setLoading(true);
       const stripe = await stripePromise;
-      const response = await fetch("/api/stripe/create-checkout-session", {
+      const response = await fetch("https://janmanch-cep.onrender.com/api/stripe/create-checkout-session", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ amount, name, contact, email }),

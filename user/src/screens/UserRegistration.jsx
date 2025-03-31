@@ -62,7 +62,7 @@ const UserRegistration = () => {
 
     try {
       const response = await axios.get(
-        `/api/auth/verify-voter?voterid=${voterID}`
+        `https://janmanch-cep.onrender.com/api/auth/verify-voter?voterid=${voterID}`
       );
 
       if (response.data.verified) {
@@ -113,7 +113,7 @@ const UserRegistration = () => {
 
     try {
       const response = await axios.post(
-        "/api/auth/register",
+        "https://janmanch-cep.onrender.com/api/auth/register",
         { ...formData },
         {
           headers: {

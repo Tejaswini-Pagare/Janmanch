@@ -92,7 +92,7 @@ const GrievanceForm = () => {
     }
 
     try {
-      await axios.post("/api/grievance/upload", formDataToSend, {
+      await axios.post("https://janmanch-cep.onrender.com/api/grievance/upload", formDataToSend, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 

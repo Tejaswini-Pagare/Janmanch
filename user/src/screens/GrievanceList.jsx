@@ -21,7 +21,7 @@ const GrievanceList = () => {
 
     const fetchGrievances = async () => {
         try {
-            const response = await axios.get("/api/grievance/get_grievance");
+            const response = await axios.get("https://janmanch-cep.onrender.com/api/grievance/get_grievance");
             setGrievances(response.data);
             localStorage.setItem("grievances", JSON.stringify(response.data));
             setFilteredGrievances(response.data);
@@ -50,7 +50,7 @@ const GrievanceList = () => {
 
     const updateStatus = async (id, status) => {
         try {
-            await axios.put(`/api/grievance/update_status/${id}`, { status });
+            await axios.put(`https://janmanch-cep.onrender.com/api/grievance/update_status/${id}`, { status });
             toast.success(`Grievance marked as ${status}`);
             fetchGrievances();
         } catch (error) {

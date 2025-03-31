@@ -23,7 +23,7 @@ const FloatingContactButton = () => {
     e.preventDefault();
   
     try {
-      const response = await axios.post("/api/contact/insert", formData);
+      const response = await axios.post("https://janmanch-cep.onrender.com/api/contact/insert", formData);
       console.log(response.data);
       toast.success("Message sent successfully!", {
         position: "top-right",

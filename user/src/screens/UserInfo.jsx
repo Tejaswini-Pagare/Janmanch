@@ -27,7 +27,7 @@ const UserInfo = () => {
     const fetchUserData = async () => {
       try {
         setLoading(true);
-        const res = await axios.get("/api/users/me", {
+        const res = await axios.get("https://janmanch-cep.onrender.com/api/users/me", {
           withCredentials: true,
         });
         setUserInfo({ ...res.data, password: "" });
@@ -47,7 +47,7 @@ const UserInfo = () => {
 
 const fetchGrievances = async () => {
     try {
-        const response = await axios.get("/api/grievance/get_grievance");
+        const response = await axios.get("https://janmanch-cep.onrender.com/api/grievance/get_grievance");
         setGrievances(response.data);
         localStorage.setItem("grievancesfromuser", JSON.stringify(response.data));
         setLoading(false);
@@ -109,7 +109,7 @@ const fetchGrievances = async () => {
         ...(userInfo.password && { password: userInfo.password }),
         profilePic: userInfo.profilePic,
       };
-      await axios.put("/api/users/update", updatedData, {
+      await axios.put("https://janmanch-cep.onrender.com/api/users/update", updatedData, {
         withCredentials: true,
       });
       toast.success("Profile updated successfully");

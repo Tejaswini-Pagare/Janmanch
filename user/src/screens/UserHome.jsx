@@ -23,7 +23,7 @@ const HomePage = () => {
 
     try {
       const response = await fetch(
-        `/api/users/projects?category=${category}`,
+        `https://janmanch-cep.onrender.com/api/users/projects?category=${category}`,
         {
           method: "GET",
           headers: { "Content-Type": "application/json" },

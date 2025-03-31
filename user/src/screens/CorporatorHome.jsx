@@ -18,7 +18,7 @@ const HomePage = () => {
     setLoading(true);
     try {
       const response = await fetch(
-        `/api/corps/projects?category=${developmentType}`,
+        `https://janmanch-cep.onrender.com/api/corps/projects?category=${developmentType}`,
         {
           method: "GET",
           headers: { "Content-Type": "application/json" },
@@ -54,7 +54,7 @@ const HomePage = () => {
 
   const handleAddGraph = async (data) => {
     try {
-      const response = await fetch("/api/corps/add", {
+      const response = await fetch("https://janmanch-cep.onrender.com/api/corps/add", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
@@ -72,7 +72,7 @@ const HomePage = () => {
   const handleDeleteGraph = async (projectId) => {
     try {
       const response = await fetch(
-        `/api/corps/delete/${projectId}`,
+        `https://janmanch-cep.onrender.com/api/corps/delete/${projectId}`,
         {
           method: "DELETE",
         }

@@ -19,8 +19,8 @@ const AdminDashboard = () => {
     const fetchData = async () => {
       try {
         const [usersRes, corporatorsRes] = await Promise.all([
-          axios.get("/api/admin/get-users", { withCredentials: true }),
-          axios.get("/api/admin/get-corporators", { withCredentials: true }),
+          axios.get("https://janmanch-cep.onrender.com/api/admin/get-users", { withCredentials: true }),
+          axios.get("https://janmanch-cep.onrender.com/api/admin/get-corporators", { withCredentials: true }),
         ]);
 
         setUsers(Array.isArray(usersRes.data.users) ? usersRes.data.users : []);
@@ -59,13 +59,13 @@ const AdminDashboard = () => {
   const handleAddCorporator = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("/api/admin/add-corporator", newCorporator, {
+      await axios.post("https://janmanch-cep.onrender.com/api/admin/add-corporator", newCorporator, {
         withCredentials: true,
       });
 
       alert("Corporator added successfully!");
 
-      const res = await axios.get("/api/admin/get-corporators", {
+      const res = await axios.get("https://janmanch-cep.onrender.com/api/admin/get-corporators", {
         withCredentials: true,
       });
       setCorporators(res.data.corporators);

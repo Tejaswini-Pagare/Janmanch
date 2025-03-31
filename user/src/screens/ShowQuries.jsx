@@ -8,7 +8,7 @@ const ShowQueries = () => {
   useEffect(() => {
     const fetchContacts = async () => {
       try {
-        const response = await axios.get("/api/contact/all");
+        const response = await axios.get("https://janmanch-cep.onrender.com/api/contact/all");
         setContacts(response.data);
       } catch (error) {
         console.error("Error fetching contacts:", error);

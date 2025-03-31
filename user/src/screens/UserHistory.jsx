@@ -14,7 +14,7 @@ function UserHistory() {
 
     const fetchGrievances = async () => {
         try {
-            const response = await axios.get(`/api/grievance/get_grievance/${userId}`);
+            const response = await axios.get(`https://janmanch-cep.onrender.com/api/grievance/get_grievance/${userId}`);
             setGrievances(response.data);
             localStorage.setItem("grievances", JSON.stringify(response.data));
         } catch (error) {

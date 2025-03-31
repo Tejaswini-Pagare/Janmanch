@@ -20,7 +20,7 @@ const ForgotPassword = () => {
 
     try {
       const response = await axios.post(
-        "/api/auth/forgot-password",
+        "https://janmanch-cep.onrender.com/api/auth/forgot-password",
         { email }
       );
 

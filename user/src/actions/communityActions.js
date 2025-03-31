@@ -6,7 +6,7 @@ export const getAllMessage = () => async (dispatch) => {
 
   try {
     console.log(import.meta.env.VITE_API_BASE_URL);
-    const response = await axios.get('/api/community/getallmessage');
+    const response = await axios.get('https://janmanch-cep.onrender.com/api/community/getallmessage');
     console.log("API Response Data:", response.data);  // Log the response to ensure we get the correct data
     dispatch({ type: "GET_COMMUNITY_SUCCESS", payload: response.data });
     

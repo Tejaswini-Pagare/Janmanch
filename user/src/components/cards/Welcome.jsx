@@ -99,7 +99,7 @@ const WelcomeCard = () => {
 
     const fetchUserName = async () => {
       try {
-        let response = await fetch("/api/corps/me", { credentials: "include" });
+        let response = await fetch("https://janmanch-cep.onrender.com/api/corps/me", { credentials: "include" });
 
         if (response.ok) {
           let data = await response.json();
@@ -109,7 +109,7 @@ const WelcomeCard = () => {
           }
         }
 
-        response = await fetch("/api/users/me", { credentials: "include" });
+        response = await fetch("https://janmanch-cep.onrender.com/api/users/me", { credentials: "include" });
         if (response.ok) {
           let data = await response.json();
           if (data?.name) {
@@ -171,7 +171,7 @@ const WelcomeCard = () => {
 
       {/* Image (ensure path is correct) */}
       <div className="absolute top-0 right-0 w-1/3 h-full hidden md:block overflow-hidden rounded-tl-2xl">
-        <img src="../src/images/voting.png" alt="Voting" className="object-cover w-full h-full rounded-3xl opacity-80"
+        <img src="/voting.png" alt="Voting" className="object-cover w-full h-full rounded-3xl opacity-80"
           style={{ clipPath: 'polygon(20% 0%, 100% 0%, 100% 100%, 20% 100%, 0% 50%)' }} />
       </div>
 

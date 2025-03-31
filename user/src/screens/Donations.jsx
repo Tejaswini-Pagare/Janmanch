@@ -15,8 +15,8 @@ function Donations() {
     const fetchDonations = async () => {
       try {
         const [moneyRes, goodsRes] = await Promise.all([
-          axios.get("/api/donations/get_donations"),
-          axios.get("/api/donations/get_goods"),
+          axios.get("https://janmanch-cep.onrender.com/api/donations/get_donations"),
+          axios.get("https://janmanch-cep.onrender.com/api/donations/get_goods"),
         ]);
 
         setDonations(moneyRes.data);

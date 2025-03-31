@@ -29,7 +29,7 @@ const LoginPage = () => {
 
     try {
       const { data } = await axios.post(
-        "/api/auth/login",
+        "https://janmanch-cep.onrender.com/api/auth/login",
         { email, password },
         { withCredentials: true }
       );
@@ -59,7 +59,7 @@ const LoginPage = () => {
         <div
           className="hidden bg-center bg-cover md:block md:w-1/2"
           style={{
-            backgroundImage: `url('/src/images/voting.png')`,
+            backgroundImage: `url('/voting.png')`,
             clipPath: "polygon(0% 0%, 91% 0, 100% 51%, 90% 100%, 0% 100%)",
           }}
         ></div>

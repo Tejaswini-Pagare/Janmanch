@@ -18,7 +18,7 @@ const ProfileMenu = ({ userImage }) => {
    useEffect(() => {
       const fetchUserProfile = async () => {
         try {
-          const res = await axios.get("/api/users/me", {
+          const res = await axios.get("https://janmanch-cep.onrender.com/api/users/me", {
             withCredentials: true,
           });
           setProfilePic(res.data.profilePic);
@@ -38,7 +38,7 @@ const ProfileMenu = ({ userImage }) => {
   const handleLogout = async () => {
     try {
       await axios.post(
-        "/api/auth/logout",
+        "https://janmanch-cep.onrender.com/api/auth/logout",
         {},
         { withCredentials: true }
       );

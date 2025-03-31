@@ -11,7 +11,7 @@ const Success = () => {
 
   useEffect(() => {
     if (sessionId) {
-      fetch(`/api/stripe/verify-payment?session_id=${sessionId}`)
+      fetch(`https://janmanch-cep.onrender.com/api/stripe/verify-payment?session_id=${sessionId}`)
         .then((res) => res.json())
         .then((data) => {
           setTransaction(data);

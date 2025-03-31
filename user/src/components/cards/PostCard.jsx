@@ -27,7 +27,7 @@ function PostCard({ id, sentby, image, title, description, btnlikes, date, edita
 
     const handleDelete = async () => {
         try {
-            await axios.delete(`/api/community/delete/${id}`);
+            await axios.delete(`https://janmanch-cep.onrender.com/api/community/delete/${id}`);
             toast.success("Post deleted successfully");
             onRefresh();
             setIsDeleteModalOpen(false);
@@ -38,7 +38,7 @@ function PostCard({ id, sentby, image, title, description, btnlikes, date, edita
 
     const handleEdit = async () => {
         try {
-            await axios.put(`/api/community/edit/${id}`, { title: newTitle, description: newDescription });
+            await axios.put(`https://janmanch-cep.onrender.com/api/community/edit/${id}`, { title: newTitle, description: newDescription });
             setIsEditModalOpen(false);
             onRefresh();
         } catch (error) {

@@ -12,7 +12,7 @@ const Donate = () => {
       toast.success("Take your goods to the nearest ward office.");
       const userId = localStorage.getItem("userId");
       
-      const response = await axios.post("/api/users/goods", { ...goodsDetails, userId });
+      const response = await axios.post("https://janmanch-cep.onrender.com/api/users/goods", { ...goodsDetails, userId });
       toast.success(response.data.message);
     } catch (error) {
       toast.error(error.response?.data?.message || "Failed to donate goods.");
