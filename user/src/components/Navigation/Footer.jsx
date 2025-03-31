@@ -13,7 +13,7 @@ const Footer = () => {
           {/* Brand Section */}
           <div className="flex flex-col items-center md:items-start">
             <div className="flex items-center justify-between">
-              <img src="src/images/janmanch_logo.png" alt="Janmanch Logo" className="h-12 mb-3" />
+              <img src="../janmanch_logo.png" alt="Janmanch Logo" className="h-12 mb-3" />
               <p className="text-3xl font-bold">Janmanch</p>
             </div>
             {/* <img src="src/images/janmanch_logo.png" alt="Janmanch Logo" className="h-12 mb-3" /> */}

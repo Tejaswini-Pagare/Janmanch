@@ -157,7 +157,7 @@ const Navbar = () => {
               {/* Logo inside mobile menu */}
               <div className="flex items-center justify-center">
                 <Link to="/" onClick={closeMenu}>
-                  <img className="w-auto h-14 sm:h-20" src="src/images/janmanch_logo.png" alt="Janmanch Logo" />
+                  <img className="w-auto h-14 sm:h-20" src="../janmanch_logo.png" alt="Janmanch Logo" />
                 </Link>
                 <span className="font-bold px-2 text-xl text-gray-700">Janmanch</span>
               </div>
