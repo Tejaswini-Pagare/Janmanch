@@ -30,7 +30,7 @@ const CorporatorDetails = () => {
         console.log("Fetching projects for category:", developmentType);
         setLoading(true);
         try {
-            const response = await axios.get(`https://janmanch-cep.onrender.com/api/users/projects?category=${developmentType}`);
+            const response = await axios.get(`https://janmanch-cep.onrender.com/api/corps/projects?category=${developmentType}`);
             if (response.status !== 200) throw new Error("Failed to fetch projects");
             setProjects(response.data.projects || []);
             calculateProjectCounts(response.data.projects || []);
