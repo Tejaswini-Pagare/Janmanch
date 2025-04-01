@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import "react-toastify/dist/ReactToastify.css";
 
 const UserRegistration = () => {
   const [formData, setFormData] = useState({
@@ -15,7 +16,11 @@ const UserRegistration = () => {
   });
 
   const [voterVerified, setVoterVerified] = useState(false);
-  const [focusedField, setFocusedField] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [isVerifying, setIsVerifying] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const navigate = useNavigate();
 
@@ -27,6 +32,9 @@ const UserRegistration = () => {
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
+
+    setIsUploading(true);
+    toast.info("Uploading profile picture...");
 
     const fileData = new FormData();
     fileData.append("file", file);
@@ -40,16 +48,16 @@ const UserRegistration = () => {
 
       setFormData((prev) => ({
         ...prev,
-        profilePic: response.data.secure_url, // ✅ Store Cloudinary URL
+        profilePic: response.data.secure_url,
       }));
+
+      toast.success("Profile picture uploaded!");
     } catch (error) {
-      toast.error("Failed to upload profile picture. Try again.");
+      toast.error("Failed to upload profile picture.");
+    } finally {
+      setIsUploading(false);
     }
   };
-
-  const handleFocus = (fieldName) => setFocusedField(fieldName);
-
-  const handleBlur = () => setFocusedField("");
 
   const handleVoterIDCheck = async () => {
     const { voterID } = formData;
@@ -60,6 +68,9 @@ const UserRegistration = () => {
       return;
     }
 
+    setIsVerifying(true);
+    toast.info("Verifying Voter ID...");
+
     try {
       const response = await axios.get(
         `https://janmanch-cep.onrender.com/api/auth/verify-voter?voterid=${voterID}`
@@ -67,7 +78,7 @@ const UserRegistration = () => {
 
       if (response.data.verified) {
         setVoterVerified(true);
-        toast.success("Voter ID verified successfully!"); 
+        toast.success("Voter ID verified successfully!");
       } else {
         setVoterVerified(false);
         toast.error("Voter ID not found. Please enter a valid voter ID.");
@@ -75,6 +86,8 @@ const UserRegistration = () => {
     } catch (error) {
       setVoterVerified(false);
       toast.error("Error verifying voter ID. Please try again.");
+    } finally {
+      setIsVerifying(false);
     }
   };
 
@@ -109,10 +122,11 @@ const UserRegistration = () => {
 
     if (!validateForm()) return;
 
-    console.log("Sending Data:", formData); 
+    setIsLoading(true);
+    toast.info("Registering your account...");
 
     try {
-      const response = await axios.post(
+      await axios.post(
         "https://janmanch-cep.onrender.com/api/auth/register",
         { ...formData },
         {
@@ -127,180 +141,128 @@ const UserRegistration = () => {
         navigate("/login");
       }, 1500);
     } catch (error) {
-      console.error(
-        "Error in registration:",
-        error.response?.data || error.message
-      );
       toast.error(
         error.response?.data?.message || "Registration failed. Try again."
       );
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const getLabelClass = (fieldName) =>
-    `block font-semibold text-left ${
-      focusedField === fieldName ? "text-teal-500" : "text-black"
-    }`;
-
   return (
-    <div className="max-w-lg p-8 mx-auto font-sans text-center"> 
-      <h2 className="mb-6 text-2xl font-bold">User Registration</h2>
-      <form
-        className="p-6 pb-2 space-y-4 bg-white border border-gray-200 rounded-lg shadow-lg"
-        onSubmit={handleSubmit}
-      >
-        <div>
-          <label htmlFor="voterID" className={getLabelClass("voterID")}>
-            Voter ID
-          </label>
-          <input
-            type="text"
-            name="voterID"
-            id="voterID"
-            className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
-            value={formData.voterID}
-            onChange={handleInputChange}
-            onFocus={() => handleFocus("voterID")}
-            onBlur={handleBlur}
-            placeholder="Enter your voter ID"
-            required
-          />
-          <button
-            type="button"
-            className="w-full py-2 mt-3 font-semibold text-white bg-teal-600 rounded hover:bg-teal-700"
-            onClick={handleVoterIDCheck}
-          >
-            Verify Voter ID
-          </button>
-        </div>
+    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <ToastContainer position="top-right" autoClose={3000} />
+      <div className="w-full max-w-md p-8 bg-white shadow-lg rounded-lg">
+        <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">
+          User Registration
+        </h2>
 
-        {voterVerified && (
-          <>
-            <div>
-              <label htmlFor="profilePicture" className="block font-semibold">
-                Profile Picture
-              </label>
-              <input
-                type="file"
-                id="profilePicture"
-                accept="image/*"
-                onChange={handleFileChange}
-                className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
-              />
-              {formData.profilePicture && (
-                <img
-                  src={formData.profilePicture}
-                  alt="Profile"
-                  className="w-20 h-20 mt-2 rounded-full"
-                />
-              )}
-            </div>
-
-            <div>
-              <label htmlFor="name" className={getLabelClass("name")}>
-                Name
-              </label>
-              <input
-                type="text"
-                name="name"
-                id="name"
-                className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
-                value={formData.name}
-                onChange={handleInputChange}
-                onFocus={() => handleFocus("name")}
-                onBlur={handleBlur}
-                placeholder="Enter your name"
-                required
-              />
-            </div>
-
-            <div>
-              <label htmlFor="email" className={getLabelClass("email")}>
-                Email
-              </label>
-              <input
-                type="email"
-                name="email"
-                id="email"
-                className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
-                value={formData.email}
-                onChange={handleInputChange}
-                onFocus={() => handleFocus("email")}
-                onBlur={handleBlur}
-                placeholder="Enter your email"
-                required
-              />
-            </div>
-
-            <div>
-              <label
-                htmlFor="phoneNumber"
-                className={getLabelClass("phoneNumber")}
-              >
-                Phone Number
-              </label>
-              <input
-                type="text"
-                name="phoneNumber"
-                id="phoneNumber"
-                className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
-                value={formData.phoneNumber}
-                onChange={handleInputChange}
-                onFocus={() => handleFocus("phoneNumber")}
-                onBlur={handleBlur}
-                placeholder="Enter your phone number"
-                required
-              />
-            </div>
-
-            <div>
-              <label htmlFor="password" className={getLabelClass("password")}>
-                Password
-              </label>
-              <input
-                type="password"
-                name="password"
-                id="password"
-                className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
-                value={formData.password}
-                onChange={handleInputChange}
-                onFocus={() => handleFocus("password")}
-                onBlur={handleBlur}
-                placeholder="Enter your password"
-                required
-              />
-            </div>
-
-            <div>
-              <label
-                htmlFor="confirmPassword"
-                className={getLabelClass("confirmPassword")}
-              >
-                Confirm Password
-              </label>
-              <input
-                type="password"
-                name="confirmPassword"
-                id="confirmPassword"
-                className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
-                value={formData.confirmPassword}
-                onChange={handleInputChange}
-                onFocus={() => handleFocus("confirmPassword")}
-                onBlur={handleBlur}
-                placeholder="Confirm your password"
-                required
-              />
-            </div>
-
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
+            <label className="block text-gray-700 font-semibold">Voter ID</label>
+            <input
+              type="text"
+              name="voterID"
+              className="w-full p-4 border border-gray-300 rounded-md focus:ring-2 focus:ring-teal-500 transition duration-200"
+              value={formData.voterID}
+              onChange={handleInputChange}
+              placeholder="Enter your voter ID"
+              required
+            />
             <button
-              type="submit"
-              className="w-full py-2 font-semibold text-white bg-teal-600 rounded hover:bg-teal-700"
+              type="button"
+              className="mt-3 w-full py-2 bg-teal-600 text-white font-semibold rounded hover:bg-teal-700 transition"
+              onClick={handleVoterIDCheck}
+              disabled={isVerifying}
             >
-              Register
+              {isVerifying ? "Verifying..." : "Verify Voter ID"}
             </button>
-          </>
-        )}
-      </form>
+          </div>
+
+          {voterVerified && (
+            <>
+              <div>
+                <label className="block text-gray-700 font-semibold">Profile Picture</label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  className="w-full p-2 border border-gray-300 rounded-md"
+                />
+              </div>
+
+              {["name", "email", "phoneNumber"].map((field, index) => (
+  <div key={index}>
+    <label className="block text-gray-700 font-semibold">
+      {field.charAt(0).toUpperCase() + field.slice(1)}
+    </label>
+    <input
+      type="text"
+      name={field}
+      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-teal-500 transition duration-200"
+      value={formData[field]}
+      onChange={handleInputChange}
+      placeholder={`Enter your ${field}`}
+      required
+    />
+  </div>
+))}
+
+              <div>
+                <label className="block text-gray-700 font-semibold">Password</label>
+                <div className="relative">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    name="password"
+                    className="w-full py-3 px-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-teal-500 transition duration-200"
+                    value={formData.password}
+                    onChange={handleInputChange}
+                    placeholder="Enter your password"
+                    required
+                  />
+                  <button
+                    type="button"
+                    className="absolute right-3 top-3 text-gray-500"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? "👁️" : "👁️‍🗨️"}
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-gray-700 font-semibold">Confirm Password</label>
+                <div className="relative">
+                  <input
+                    type={showConfirmPassword ? "text" : "password"}
+                    name="confirmPassword"
+                    className="w-full py-3 px-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-teal-500 transition duration-200"
+                    value={formData.confirmPassword}
+                    onChange={handleInputChange}
+                    placeholder="Confirm your password"
+                    required
+                  />
+                  <button
+                    type="button"
+                    className="absolute right-3 top-3 text-gray-500"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  >
+                    {showConfirmPassword ? "👁️" : "👁️‍🗨️"}
+                  </button>
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                className="w-full py-3 bg-teal-600 text-white font-semibold rounded hover:bg-teal-700 transition"
+                disabled={isLoading}
+              >
+                {isLoading ? "Registering..." : "Register"}
+              </button>
+            </>
+          )}
+        </form>
+      </div>
     </div>
   );
 };

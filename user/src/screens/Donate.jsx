@@ -14,6 +14,7 @@ const Donate = () => {
       
       const response = await axios.post("https://janmanch-cep.onrender.com/api/users/goods", { ...goodsDetails, userId });
       toast.success(response.data.message);
+      setGoodsDetails({ material: "", description: "", recipient: "" });
     } catch (error) {
       toast.error(error.response?.data?.message || "Failed to donate goods.");
     }
