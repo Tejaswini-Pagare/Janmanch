@@ -36,6 +36,9 @@ const StripeDonate = () => {
     } catch (error) {
       toast.error("Payment failed. Try again.");
     }
+    finally{
+      setLoading(false);
+    }
   };
 
   return (
@@ -44,7 +47,9 @@ const StripeDonate = () => {
       <input type="text" value={contact} onChange={(e) => setContact(e.target.value)} placeholder="Your Contact" className="w-full px-4 py-2 border border-gray-300 rounded-md" />
       <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Your Email" className="w-full px-4 py-2 border border-gray-300 rounded-md" />
       <input type="number" value={amount} onChange={(e) => setAmount(e.target.value)} placeholder="Amount (INR)" className="w-full px-4 py-2 border border-gray-300 rounded-md" />
-      <button onClick={handlePayment} className="w-full px-4 py-2 text-white bg-green-600 rounded-md hover:bg-green-700">Donate via Stripe</button>
+      <button onClick={handlePayment} className="w-full px-4 py-2 text-white bg-green-600 rounded-md hover:bg-green-700">
+        {loading ? "Processing..." : "Donate via Stripe"}
+      </button>
     </div>
   );
 };

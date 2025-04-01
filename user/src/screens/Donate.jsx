@@ -6,23 +6,33 @@ import axios from "axios";
 const Donate = () => {
   const [donationType, setDonationType] = useState("");
   const [goodsDetails, setGoodsDetails] = useState({ material: "", description: "", recipient: "" });
-  
+  const [loading, setLoading] = useState(false);
   const handleDonateGoods = async () => {
     try {
+      if (!goodsDetails.material || !goodsDetails.description || !goodsDetails.recipient) {
+        toast.error("Please fill all fields.");
+        return;
+      }
       toast.success("Take your goods to the nearest ward office.");
       const userId = localStorage.getItem("userId");
       
       const response = await axios.post("https://janmanch-cep.onrender.com/api/users/goods", { ...goodsDetails, userId });
+      
       toast.success(response.data.message);
+
       setGoodsDetails({ material: "", description: "", recipient: "" });
     } catch (error) {
       toast.error(error.response?.data?.message || "Failed to donate goods.");
+    }
+    finally {
+      setLoading(false);
     }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (donationType === "goods") handleDonateGoods();
+    setLoading(true);
 
   };
 
@@ -46,7 +56,10 @@ const Donate = () => {
             <input type="text" value={goodsDetails.material} onChange={(e) => setGoodsDetails({ ...goodsDetails, material: e.target.value })} placeholder="Material (e.g., Clothes, Food)" className="w-full px-4 py-2 border border-gray-300 rounded-md" />
             <textarea value={goodsDetails.description} onChange={(e) => setGoodsDetails({ ...goodsDetails, description: e.target.value })} placeholder="Description" className="w-full px-4 py-2 border border-gray-300 rounded-md" />
             <input type="text" value={goodsDetails.recipient} onChange={(e) => setGoodsDetails({ ...goodsDetails, recipient: e.target.value })} placeholder="Recipient" className="w-full px-4 py-2 border border-gray-300 rounded-md" />
-            <button type="submit" className="w-full px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700">Submit Goods Donation</button>
+            <button type="submit" className="w-full px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700">
+              
+              {loading ? "Submitting..." : "Submit Goods Donation"}              
+              </button>
           </form>
         )}
         {donationType === "money" && <StripeDonate />}
