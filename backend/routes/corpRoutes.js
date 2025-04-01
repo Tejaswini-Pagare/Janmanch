@@ -71,29 +71,21 @@
 
   router.get(
     "/projects",
-    authMiddleware,
-    roleMiddleware("corporator", "admin"),
     getProjects
   );
 
   router.post(
     "/add",
-    authMiddleware,
-    roleMiddleware("corporator", "admin"),
     addProject
   );
 
   router.put(
     "/update/:id",
-    authMiddleware,
-    roleMiddleware("corporator", "admin"),
     updateProject
   );
 
   router.delete(
     "/delete/:id",
-    authMiddleware,
-    roleMiddleware("corporator", "admin"),
     deleteProject
   );
 
