@@ -13,7 +13,7 @@ const GrievanceList = () => {
     const [selectedStatus, setSelectedStatus] = useState("All");
     const [sortField, setSortField] = useState("submissionType");
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 5;
+    const itemsPerPage = 10;
 
     useEffect(() => {
         fetchGrievances();
